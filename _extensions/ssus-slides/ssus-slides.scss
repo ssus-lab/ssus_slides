@@ -171,20 +171,44 @@ html.ssus-dark #title-slide {
   margin: 0 0 0.4em 0;
   max-width: 24ch;
 }
+/* Detail lines carry clean's hierarchy, in SSUS tokens: the subtitle is an
+   italic accent; authors are the strongest detail line (full identity
+   color, upright weight 600, side by side in one row); institute and date
+   demote by italic and tone at near the same size, not by shrink alone. */
 #title-slide .subtitle {
   color: var(--ssus-detail);
-  font-style: normal;
+  font-style: italic;
   font-weight: 400;
-  font-size: 0.8em;
+  font-size: 0.9em;
+  margin-top: 0;
   margin-bottom: 1.1em;
 }
 #title-slide .author,
+#title-slide .quarto-title-author-name {
+  color: $ssus-plan-white;
+  font-weight: 600;
+  font-size: 0.85em;
+}
+#title-slide .author {
+  display: inline-block;
+  margin: 0 1.4em 0.35em 0;
+}
 #title-slide .institute,
-#title-slide .date {
+#title-slide .quarto-title-affiliation,
+#title-slide .quarto-title-author-email,
+#title-slide .quarto-title-affiliations {
+  font-style: italic;
   color: var(--ssus-detail);
   font-weight: 400;
-  font-size: 0.7em;
-  margin-bottom: 0.35em;
+  font-size: 0.72em;
+  margin-bottom: 0.3em;
+}
+#title-slide .date {
+  font-style: italic;
+  color: var(--ssus-detail);
+  font-weight: 400;
+  font-size: 0.72em;
+  margin-bottom: 0.3em;
 }
 /* the core .slide-logo must never ride the hero beside the lockup */
 #title-slide .slide-logo {
