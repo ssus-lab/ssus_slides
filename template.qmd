@@ -1,0 +1,16 @@
+---
+# SSUS slides — bare starter. Copy this file to begin a deck.
+# Full option reference: README.md. Exercising decks: demo/index.qmd,
+# demo/dark.qmd (ssus-dark: true), demo/course.qmd (course eyebrow).
+title: "Slide title"
+subtitle: "Subtitle, or delete this line"
+author: "Your Name"
+institute: "Spatial Science and Urban Systems · UC Irvine"
+date: today
+ssus-series: "SSUS working paper series"
+format: ssus-slides-revealjs
+---
+
+## First slide
+
+- One point.

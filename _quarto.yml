@@ -1,0 +1,7 @@
+project:
+  type: default
+  render:
+    - template.qmd
+    - demo/index.qmd
+    - demo/dark.qmd
+    - demo/course.qmd

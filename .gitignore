@@ -1,0 +1,10 @@
+_site/
+.quarto/
+qa/
+__pycache__/
+.DS_Store
+*.html
+!_extensions/**/*.html
+resources/
+/.quarto/
+**/*.quarto_ipynb

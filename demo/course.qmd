@@ -1,0 +1,34 @@
+---
+title: "Microeconomic Analysis for Urban Planning"
+subtitle: "Week 3 · Urban land use and zoning"
+author: "Elijah Knaap"
+institute: "School of Social Ecology · UC Irvine"
+date: 2026-10-13
+ssus-series: "UPPP 206 · Fall 2026"
+format: ssus-slides-revealjs
+---
+
+## The course-title-slide grammar
+
+This deck carries the brand sheet's Surface 04 grammar: the mono eyebrow
+reads the course and term, the title is set heavy, and the detail line holds
+instructor, school, and meeting.
+
+Decks per week, one file per session.
+
+## Where the lecture goes
+
+- The instrument: what zoning regulates, and what it cannot.
+- The mechanism: sorting among jurisdictions within a metropolis.
+- The case: Houston, the standing natural experiment.
+
+*This is a demonstration deck, not course material — see the UPPP 206 site
+for the real lectures.*
+
+## A schedule table
+
+| Block | Minutes | Topic |
+|-------|--------:|-------|
+| Recap | 10 | Week 2's mechanism |
+| Case | 25 | Houston and its suburbs |
+| Discussion | 20 | Reading responses |

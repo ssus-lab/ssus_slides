@@ -1,0 +1,357 @@
+/* ssus-slides.scss — the SSUS slide identity, loosely following the design
+   approach of grantmcdermott/quarto-revealjs-clean's clean.scss (one theme
+   file, layers over `default`, low chrome): the look is entirely SSUS.
+
+   Token sources (ssus-lab-brand):
+     - palette   quarto/_brand.yml + _brand-dark.yml
+     - slide grammar  sheets/ssus-identity-mocks.html — Surface 04 (course
+       title slide: mono uppercase eyebrow, Franklin 800 title, muted detail,
+       corner mark) and Surface 05 (blueprint hero with the 30px graticule
+       grid at rgba(248,249,247,.06))
+     - dark ground rules: night is the dark PAGE ground (#101821, mplstyle's
+       figure ground), never blueprint — blueprint remains the blueprint of
+       the reversed lockups (the hero) and, via ssus-dark, of nothing else.
+   Opt-in dark decks flip the semantic custom properties on html.ssus-dark
+   (see ssus.lua); there is no prefers-color-scheme anywhere.               */
+
+/*-- scss:defaults --*/
+
+/* SSUS brand palette */
+$ssus-blueprint:   #0F3B5E;  /* the mark, headings' link accent, hero ground */
+$ssus-survey-ink:  #16232E;  /* body text */
+$ssus-plan-white:  #F8F9F7;  /* page ground */
+$ssus-graticule:   #8FA1AB;  /* rules, axes, secondary marks */
+$ssus-slate:       #5C6B74;  /* secondary text, tick labels */
+$ssus-sky:         #9DBBD6;  /* secondary text on blueprint */
+$ssus-signal:      #E0691E;  /* data accent only — the flagged unit */
+
+/* dark-mode extras (_brand-dark.yml + ssus-dark.mplstyle) */
+$ssus-night:       #101821;  /* dark page ground */
+$ssus-haze:        #E6EBEA;  /* dark foreground */
+$ssus-sky-link:    #7FAFD4;  /* dark links */
+$ssus-signal-dark: #E8813D;  /* dark signal */
+$ssus-night-grid:  #25313B;  /* dark hairlines, from ssus-dark.mplstyle's grid */
+
+/* matplotlib series palettes (ssus_style.py) — data colors for figures and
+   the optional bullet tints; Signal (s2) is also .alert's color in light */
+$ssus-series-1: #0467A8;  $ssus-series-2: #E0691E;  $ssus-series-3: #14938D;
+$ssus-series-4: #AC8205;  $ssus-series-5: #914A8C;  $ssus-series-6: #58994A;
+
+/* semantic roles — the only thing the dark flip retunes */
+$ssus-ground:    $ssus-plan-white;
+$ssus-ink:       $ssus-survey-ink;
+$ssus-secondary: $ssus-slate;
+$ssus-rule:      $ssus-graticule;
+$ssus-link:      $ssus-blueprint;
+$ssus-signal-x:  $ssus-signal;
+$ssus-code-bg:   rgba(22, 35, 46, 0.05);
+
+/* reveal/bootstrap tokens */
+$body-bg: $ssus-ground;
+$body-color: $ssus-ink;
+$link-color: $ssus-link;
+$presentation-font-size-root: 32px;               /* clean's lever, down from 40 */
+$presentation-heading-font: "Libre Franklin", sans-serif;
+$presentation-heading-color: $ssus-ink;
+$presentation-heading-font-weight: 800;
+$presentation-heading-line-height: 1.25;
+
+/* quarto callout theme vars — the note color keys the callout css wholesale
+   (border, tint, icon); the other callout types keep stock colors */
+$callout-color-note: $ssus-blueprint;
+
+/*-- scss:rules --*/
+
+/* Runtime palette: every rule below consumes var(--ssus-*), never raw hex
+   (except the hero, which is fixed blueprint/plan-white identity). */
+:root {
+  --ssus-ground: #{$ssus-ground};
+  --ssus-ink: #{$ssus-ink};
+  --ssus-secondary: #{$ssus-secondary};
+  --ssus-rule: #{$ssus-rule};
+  --ssus-link: #{$ssus-link};
+  --ssus-signal: #{$ssus-signal-x};
+  --ssus-eyebrow: #9FB8CB;          /* the mock's sky tint for the eyebrow line */
+  --ssus-detail: #B9CBD9;           /* muted identity text on the blueprint hero */
+  --ssus-code-bg: #{$ssus-code-bg};
+  --ssus-series-1: #{$ssus-series-1};
+  --ssus-series-2: #{$ssus-series-2};
+  --ssus-series-3: #{$ssus-series-3};
+  --ssus-series-4: #{$ssus-series-4};
+  --ssus-series-5: #{$ssus-series-5};
+  --ssus-series-6: #{$ssus-series-6};
+}
+
+/* Opt-in dark deck (ssus-dark: true → html.ssus-dark via ssus.lua).
+   Night ground, haze ink, sky links; the series palette swaps to its
+   night-validated set. No prefers-color-scheme anywhere. */
+html.ssus-dark {
+  --ssus-ground: #{$ssus-night};
+  --ssus-ink: #{$ssus-haze};
+  --ssus-secondary: #{$ssus-graticule};
+  --ssus-rule: #{$ssus-night-grid};
+  --ssus-link: #{$ssus-sky-link};
+  --ssus-signal: #{$ssus-signal-dark};
+  --ssus-eyebrow: #{$ssus-sky-link};
+  --ssus-detail: #{$ssus-sky};
+  --ssus-code-bg: rgba(230, 235, 234, 0.06);
+  --ssus-series-1: #2A76C3;
+  --ssus-series-2: #DE6E2C;
+  --ssus-series-3: #29A895;
+  --ssus-series-4: #B68B16;
+  --ssus-series-5: #AB61A5;
+  --ssus-series-6: #5B9C4D;
+}
+
+/* Container */
+.reveal-viewport {
+  background-color: var(--ssus-ground);
+}
+/* the stack: clip it at the deck box so a neighboring slide never peeks
+   through an un-covered strip of viewport */
+.reveal .slides {
+  overflow: hidden;
+}
+/* content slides pad themselves; the deck box is the full viewport */
+.reveal .slides > section.slide {
+  box-sizing: border-box;
+  padding: 3.5% 6% 5.5%;
+}
+.reveal {
+  color: var(--ssus-ink);
+  font-family: "Libre Franklin", sans-serif;
+}
+.reveal code,
+.reveal pre,
+.reveal kbd {
+  font-family: "IBM Plex Mono", monospace;
+}
+.reveal pre {
+  background: var(--ssus-code-bg);
+  box-shadow: none;
+  padding: 0.6em 0.75em;
+}
+
+/* Title slide — the blueprint hero (Surface 05): blueprint ground with the
+   30px graticule grid, mono eyebrow, 800 title, muted detail, stacked
+   lockup. In dark decks the hero retints to night, same grid. The identity
+   colors stay fixed: this slide does not read the semantic roles. */
+#title-slide {
+  /* Do not set position here: reveal 5 lays out top-level sections itself
+     (they are absolutely positioned by its JS), and forcing the title back
+     into flow breaks every later slide's anchor. The section is a positioned
+     ancestor as it is, so the absolute .ssus-lockup anchors to it. */
+  text-align: left;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 7% 6%;
+  background-color: $ssus-blueprint;
+  background-image:
+    repeating-linear-gradient(0deg,  rgba(248, 249, 247, 0.06) 0 1px, transparent 1px 30px),
+    repeating-linear-gradient(90deg, rgba(248, 249, 247, 0.06) 0 1px, transparent 1px 30px);
+}
+html.ssus-dark #title-slide {
+  background-color: $ssus-night;
+}
+#title-slide .ssus-eyebrow {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.44em;
+  color: var(--ssus-eyebrow);
+  margin-bottom: 1em;
+}
+#title-slide h1.title {
+  color: $ssus-plan-white;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  font-size: 1.9em;
+  margin: 0 0 0.4em 0;
+  max-width: 24ch;
+}
+#title-slide .subtitle {
+  color: var(--ssus-detail);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.8em;
+  margin-bottom: 1.1em;
+}
+#title-slide .author,
+#title-slide .institute,
+#title-slide .date {
+  color: var(--ssus-detail);
+  font-weight: 400;
+  font-size: 0.7em;
+  margin-bottom: 0.35em;
+}
+/* the core .slide-logo must never ride the hero beside the lockup */
+#title-slide .slide-logo {
+  display: none !important;
+}
+.ssus-lockup {
+  position: absolute;
+  left: 6%;
+  bottom: 7%;
+  height: 110px;
+  width: auto;
+}
+
+/* Headings — flattened hierarchy. In quarto decks the slide title is an h2
+   (`##`); `#` opens a section slide (h1). */
+.reveal h1 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ssus-ink);
+  font-size: 1.75em;
+}
+.reveal h2 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ssus-ink);
+  font-size: 1.35em;
+  border-bottom: 1px solid var(--ssus-rule);
+  padding-bottom: 0.25em;
+  margin-bottom: 0.6em;
+}
+.reveal h3 {
+  font-weight: 600;
+  color: var(--ssus-link);
+  font-size: 0.85em;
+}
+.reveal h4 {
+  /* the masthead's block-label grammar: a mono annotation layer, not an
+     italic accent */
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.65em;
+  color: var(--ssus-secondary);
+  margin-top: 1.1em;
+}
+
+/* Tables — booktabs: weightless cells, ink rules above and below. */
+.reveal table {
+  font-size: 0.85em;
+  border-collapse: collapse;
+}
+.reveal table th,
+.reveal table td {
+  border: none;
+  padding: 0.3em 0.6em;
+  background-color: transparent;
+}
+.reveal table thead th {
+  border-top: 2px solid var(--ssus-ink);
+  border-bottom: 1px solid var(--ssus-rule);
+  font-weight: 600;
+}
+.reveal table tbody tr:last-child th,
+.reveal table tbody tr:last-child td {
+  border-bottom: 2px solid var(--ssus-ink);
+}
+.reveal table caption {
+  caption-side: bottom;
+  font-family: "IBM Plex Mono", monospace;
+  font-variant: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.55em;
+  color: var(--ssus-secondary);
+}
+
+/* Corner chrome — small mark bottom-left, muted number bottom-right.
+   Quarto's footer machinery parks both outside .reveal (body-level divs),
+   and its own CSS positions them; the !important flags win that race.
+   Quarto 1.10 defaults the logo to bottom-right; move it. */
+.slide-logo {
+  left: 14px !important;
+  right: auto !important;
+  bottom: 12px !important;
+  top: auto !important;
+  height: 22px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+/* hidden on the hero: the slide-logo element lives at body level, outside
+   the title section, so a descendant selector can't reach it — key on the
+   body state (the same :has() mechanic clean's title-logo lua generates) */
+body:has(#title-slide.present) .slide-logo {
+  display: none !important;
+}
+.slide-number {
+  top: auto !important;
+  bottom: 14px !important;
+  right: 16px !important;
+  font-family: "IBM Plex Mono", monospace !important;
+  font-size: 0.55em !important;
+  color: var(--ssus-secondary) !important;
+}
+
+/* Links — ink underline on a graticule trace, the masthead's link grammar. */
+.reveal a {
+  color: var(--ssus-link);
+  text-decoration: underline;
+  text-decoration-color: var(--ssus-rule);
+  text-underline-offset: 2px;
+}
+.reveal a:hover {
+  color: var(--ssus-link);
+}
+
+/* Utilities */
+.alert {
+  color: var(--ssus-signal);
+}
+.fg-blueprint { color: $ssus-blueprint; }
+.fg-ink       { color: $ssus-survey-ink; }
+.fg-slate     { color: $ssus-slate; }
+.fg-signal    { color: var(--ssus-signal); }
+.fg-s1 { color: var(--ssus-series-1); }
+.fg-s2 { color: var(--ssus-series-2); }
+.fg-s3 { color: var(--ssus-series-3); }
+.fg-s4 { color: var(--ssus-series-4); }
+.fg-s5 { color: var(--ssus-series-5); }
+.fg-s6 { color: var(--ssus-series-6); }
+.bg-blueprint { background-color: $ssus-blueprint; }
+.bg-ink       { background-color: $ssus-survey-ink; }
+.bg-signal    { background-color: var(--ssus-signal); }
+.bg-s1 { background-color: var(--ssus-series-1); }
+.bg-s2 { background-color: var(--ssus-series-2); }
+.bg-s3 { background-color: var(--ssus-series-3); }
+.bg-s4 { background-color: var(--ssus-series-4); }
+.bg-s5 { background-color: var(--ssus-series-5); }
+.bg-s6 { background-color: var(--ssus-series-6); }
+/* bullet tints cycle the series palette — opt-in, never the default; the
+   class may ride the list itself or a div wrapping it */
+.ssus-series-tints li:nth-child(6n+1)::marker { color: var(--ssus-series-1); }
+.ssus-series-tints li:nth-child(6n+2)::marker { color: var(--ssus-series-2); }
+.ssus-series-tints li:nth-child(6n+3)::marker { color: var(--ssus-series-3); }
+.ssus-series-tints li:nth-child(6n+4)::marker { color: var(--ssus-series-4); }
+.ssus-series-tints li:nth-child(6n+5)::marker { color: var(--ssus-series-5); }
+.ssus-series-tints li:nth-child(6n+6)::marker { color: var(--ssus-series-6); }
+
+/* Callouts — the note type recolors wholesale via $callout-color-note;
+   here just the tint and the title voice. The icon ships as a per-type SVG
+   asset with its stock color baked in, so it is hidden rather than forked
+   per ground — the callout's border and tint carry the distinction. */
+.reveal .callout {
+  background-color: var(--ssus-code-bg);
+}
+.reveal .callout .callout-icon,
+.reveal .callout .callout-icon-container {
+  display: none;
+}
+.reveal .callout .callout-title {
+  color: var(--ssus-ink);
+}
+
+/* Blockquote — quiet: graticule left rule, secondary voice. */
+.reveal blockquote {
+  border-left: 2px solid var(--ssus-rule);
+  color: var(--ssus-secondary);
+  font-style: italic;
+  box-shadow: none;
+}

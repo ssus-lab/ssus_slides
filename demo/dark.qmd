@@ -1,0 +1,58 @@
+---
+title: "The structure of cities, measured"
+subtitle: "SSUS slides, dark deck — ssus-dark: true"
+author: "Elijah Knaap"
+institute: "Spatial Science and Urban Systems · UC Irvine"
+date: today
+ssus-series: "SSUS working paper series"
+ssus-dark: true
+format: ssus-slides-revealjs
+bibliography: refs.bib
+---
+
+## About this deck
+
+Same content as the light flagship, but the whole deck rides
+`ssus-dark: true`: night ground, haze text, sky links, the night series
+palette, and the night-stacked lockup on the hero.
+
+There is no `prefers-color-scheme` anywhere — a deck is a shared-room
+artifact; the room picks once, at `ssus-dark:`, not per audience laptop.
+
+## Dark tokens
+
+#### Annotation label, now in graticule
+
+[Links](https://spatialscience.org) go sky on night; hairlines drop to the
+dark grid color, from the lab's dark matplotlib style.
+
+Bullets cycling the night series palette:
+
+::: {.ssus-series-tints}
+- Series blue
+- Dark signal
+- Teal
+- Gold
+- Plum
+- Green
+:::
+
+An <span class="alert">alert</span> span switches to the dark signal token.
+
+## Table and math stay legible
+
+| Region | Population | Share in principal city |
+|--------|-----------:|------------------------:|
+| Dallas | 7,543,340 | 24% |
+| Houston | 7,048,954 | 68% |
+
+: Night-ground tables keep the ink rules
+
+$$p = \frac{1}{B}\,\sum_{b=1}^{B} \mathbb{1}\!\left( \lvert \hat{D}^{*}_b \rvert \geq \lvert \hat{D} \rvert \right)$$
+
+Cited again to keep the references slide [@cortes2026segregation].
+
+## References
+
+::: {#refs}
+:::

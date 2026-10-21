@@ -1,0 +1,90 @@
+title: SSUS slides
+author: Eli Knaap
+version: 0.1.0
+quarto-required: ">=1.4.11"
+
+# SSUS revealjs format — the lab's slide identity, loosely based on
+# grantmcdermott/quarto-revealjs-clean (MIT): minimal format config, one
+# scss theme layered on `default`, low heading hierarchy, booktabs tables,
+# muted corner chrome, and mathjax-config.js copied verbatim from clean.
+#
+# The identity layer is entirely SSUS, hardcoded (revealjs does not consume
+# _brand.yml the way html does — the same call the course template's
+# reveal-custom.scss made): palette and type from ssus-lab-brand
+# (`quarto/_brand.yml`, `_brand-dark.yml`, `matplotlib/ssus_style.py`), the
+# slide grammar from the brand sheets (`sheets/ssus-identity-mocks.html`,
+# Surface 04 course title slide, Surface 05 blueprint hero + 30px graticule
+# grid). Fonts are OFL and vendored (Libre Franklin set copied from the
+# ssus-masthead extension; IBM Plex Mono downloaded from google/fonts) — no
+# Google Fonts @import, which fails offline. Lockups vendored from
+# ssus-lab-brand/quarto and embedded as data-URIs in title-slide.html
+# (regenerate with `base64 -i assets/ssus-stacked-*.svg | tr -d '\n'`).
+#
+# Opt-in dark decks ride `ssus-dark: true` — the ssus.lua filter adds an
+# `html.ssus-dark` class that flips CSS custom properties. There is no
+# prefers-color-scheme anywhere: decks are shared-room artifacts and must
+# not flip mid-presentation.
+#
+# Install by vendoring: copy this whole `_extensions/ssus-slides/` folder
+# into the project and re-copy it IN FULL whenever the source changes — a
+# partial re-sync once left a stale vendor elsewhere in the house and quarto
+# silently fell back to plain html. (`quarto add` stalls when the GitHub
+# fetch hangs, so it is not the documented install here.)
+
+contributes:
+  formats:
+    revealjs:
+      theme: [default, ssus-slides.scss]
+      filters: [ssus.lua]
+      template-partials: [title-slide.html]
+      logo: ssus-mark-light.svg
+      width: 1280
+      height: 720
+      margin: 0.0
+      menu:
+        side: left
+      slide-number: true
+      progress: false
+      date-format: long
+      html-math-method:
+        method: mathjax
+        url: https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js
+      include-in-header:
+        - text: |
+            <script>
+            /* Reveal sizes its slide stack early; when vendored faces swap in
+               afterwards, metrics move and slides can land half-scrolled.
+               Re-run the layout once the fonts settle. */
+            document.fonts.ready.then(function () {
+              if (window.Reveal && window.Reveal.sync) { window.Reveal.sync(); }
+            });
+            </script>
+            <style>
+            /* Vendored OFL fonts, copied next to the rendered input by
+               format-resources (which flattens the extension's fonts/ dir to
+               basenames), so the urls are page-relative plain filenames.
+               No Google @import: it fails offline. */
+            @font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 400; font-display: swap; src: url("LibreFranklin-Regular.ttf") format("truetype"); }
+            @font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 400; font-display: swap; src: url("LibreFranklin-Italic.ttf") format("truetype"); }
+            @font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 600; font-display: swap; src: url("LibreFranklin-SemiBold.ttf") format("truetype"); }
+            @font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 600; font-display: swap; src: url("LibreFranklin-SemiBoldItalic.ttf") format("truetype"); }
+            @font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 800; font-display: swap; src: url("LibreFranklin-ExtraBold.ttf") format("truetype"); }
+            @font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 800; font-display: swap; src: url("LibreFranklin-ExtraBoldItalic.ttf") format("truetype"); }
+            @font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("IBMPlexMono-Regular.ttf") format("truetype"); }
+            @font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 600; font-display: swap; src: url("IBMPlexMono-SemiBold.ttf") format("truetype"); }
+            </style>
+      include-before-body:
+        - text: |
+            <script src="mathjax-config.js"></script>
+      format-resources:
+        - mathjax-config.js
+        - ssus-mark-light.svg
+        - ssus-mark-night.svg
+        - fonts/LibreFranklin-Regular.ttf
+        - fonts/LibreFranklin-Italic.ttf
+        - fonts/LibreFranklin-SemiBold.ttf
+        - fonts/LibreFranklin-SemiBoldItalic.ttf
+        - fonts/LibreFranklin-ExtraBold.ttf
+        - fonts/LibreFranklin-ExtraBoldItalic.ttf
+        - fonts/IBMPlexMono-Regular.ttf
+        - fonts/IBMPlexMono-SemiBold.ttf

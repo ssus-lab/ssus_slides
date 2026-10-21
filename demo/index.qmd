@@ -1,0 +1,145 @@
+---
+title: "The structure of cities, measured"
+subtitle: "Working-paper slide deck for the SSUS format"
+author: "Elijah Knaap"
+institute: "Spatial Science and Urban Systems · UC Irvine"
+date: today
+ssus-series: "SSUS working paper series"
+format: ssus-slides-revealjs
+bibliography: refs.bib
+---
+
+## About this deck
+
+This deck exercises every surface of the `ssus-slides` format: the blueprint
+hero you just saw, the heading hierarchy, list treatments, a figure in the
+lab's series palette, booktabs tables, math in MathJax, columns, a callout,
+and a citation.
+
+The grammar follows the brand identity sheets: a mono eyebrow carries the
+series line, the title is set heavy in Libre Franklin, and detail lines stay
+muted. Chrome is four corners only.
+
+## Type hierarchy {#type}
+
+### A level-three heading
+
+Body text set at the deck root — 32 px so dense slides stay legible from the
+back row. **Bold** and *italic* carry inline emphasis; a
+[link](https://spatialscience.org) goes ink-blue with a graticule underline.
+
+#### A level-four annotation label
+
+For asides and block labels — the masthead's mono grammar, not an italic
+accent.
+
+> A quotation, quiet: graticule rule, secondary voice.
+
+## Lists
+
+Default bullets:
+
+- One mechanism, measured.
+- A second, tested against a null.
+- A third, reported with its own uncertainty.
+
+Bullets cycling the series palette (`.ssus-series-tints`):
+
+::: {.ssus-series-tints}
+- Series blue
+- Signal orange
+- Teal
+- Gold
+- Plum
+- Green
+:::
+
+And an <span class="alert">alert</span> span flags a unit worth your eye —
+signal orange, data accent only, never chrome.
+
+## A figure in the series palette
+
+```{python}
+#| echo: false
+#| out-width: 68%
+#| fig-height: 2.6
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.rcParams.update({
+    "font.family": "serif",
+    "figure.dpi": 150,
+})
+SERIES = ["#0467A8", "#E0691E", "#14938D", "#AC8205", "#914A8C", "#58994A"]
+x = np.linspace(0, 10, 200)
+fig, ax = plt.subplots(figsize=(6.4, 2.4))
+for i, c in enumerate(SERIES):
+    ax.plot(x, (x * (i + 1) ** 0.5) % 8 + i * 0.4, color=c, lw=2, label=f"series {i + 1}")
+ax.set_xlabel("x")
+ax.set_ylabel("f(x)")
+ax.legend(frameon=False, ncols=2, fontsize=8)
+plt.show()
+```
+
+The six lab series, as matplotlib draws them. Data colors only — the palette
+is validated for colorblind and contrast-safe use, and Signal (series 2)
+stays out of the mark and the chrome.
+
+## A booktabs table {#tbl-city}
+
+| Region | Population | Share in principal city |
+|--------|-----------:|------------------------:|
+| Dallas | 7,543,340 | 24% |
+| Houston | 7,048,954 | 68% |
+
+: Two metropolises, same macro forces, different land-use regimes
+
+Weightless cells; the header and last row carry the ink rules.
+
+## Math
+
+Comparative spatial inference permutes the assignment vector to build a null
+distribution of the difference $\hat{D}^{*}_b$. The permutation $p$-value
+estimates
+
+$$p = \frac{1}{B}\,\sum_{b=1}^{B} \mathbb{1}\!\left( \lvert \hat{D}^{*}_b \rvert \geq \lvert \hat{D} \rvert \right)$$
+
+Inline, $\tilde{H}$ decomposes additively across the city–suburb partition.
+
+## Columns
+
+::: {.columns}
+::: {.column width="58%"}
+**The argument.** Zoning is a municipal instrument: its effect operates
+through competition among *intra*-metropolitan jurisdictions, the sorting the
+Tiebout mechanism describes.
+:::
+::: {.column width="40%"}
+**The comparison.** Re-partition each region into principal city versus
+suburbs, and test *within* each.
+:::
+:::
+
+## Callouts and code
+
+::: {.callout-note}
+
+## A note callout
+
+Callouts get a graticule rule and an ink title; code sets in IBM Plex Mono.
+
+```python
+from neighbayes import NeighBayes  # the lab's own packages carry the work
+```
+:::
+
+## One citation
+
+The segregation package ships comparative inference for Python
+[@cortes2026segregation]. [@cortes2026segregation] also anchors a references
+slide when cited.
+
+## References
+
+::: {#refs}
+:::
