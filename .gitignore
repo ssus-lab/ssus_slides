@@ -8,3 +8,11 @@ __pycache__/
 resources/
 /.quarto/
 **/*.quarto_ipynb
+# quarto's asset dirs for root-level decks (template_files/ etc.)
+*_files/
+# format-resources flattens copies next to the input; at the repo root the
+# input IS template.qmd, so these copies are build byproducts, not source
+/IBMPlexMono-*.ttf
+/LibreFranklin-*.ttf
+/ssus-mark-*.svg
+/mathjax-config.js
