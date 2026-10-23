@@ -21,10 +21,8 @@ artifact; the room picks once, at `ssus-dark:`, not per audience laptop.
 
 ## Dark tokens
 
-#### Annotation label, now in graticule
-
 [Links](https://spatialscience.org) go sky on night; hairlines drop to the
-dark grid color, from the lab's dark matplotlib style.
+dark grid color.
 
 Bullets cycling the night series palette:
 
@@ -36,8 +34,6 @@ Bullets cycling the night series palette:
 - Plum
 - Green
 :::
-
-An <span class="alert">alert</span> span switches to the dark signal token.
 
 ## Table and math stay legible
 

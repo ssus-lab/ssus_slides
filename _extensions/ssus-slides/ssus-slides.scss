@@ -50,7 +50,7 @@ $ssus-code-bg:   rgba(22, 35, 46, 0.05);
 $body-bg: $ssus-ground;
 $body-color: $ssus-ink;
 $link-color: $ssus-link;
-$presentation-font-size-root: 32px;               /* clean's lever, down from 40 */
+$presentation-font-size-root: 34px;               /* clean's lever, down from 40 */
 $presentation-heading-font: "Libre Franklin", sans-serif;
 $presentation-heading-color: $ssus-ink;
 $presentation-heading-font-weight: 800;
@@ -112,10 +112,22 @@ html.ssus-dark {
 .reveal .slides {
   overflow: hidden;
 }
-/* content slides pad themselves; the deck box is the full viewport */
+/* content slides pad themselves; the deck box is the full viewport, and a
+   short slide sits optically centred instead of top-anchored over a dead
+   lower half. The hero is `#title-slide`, not a `.slide`, so it keeps its
+   own composition. */
 .reveal .slides > section.slide {
   box-sizing: border-box;
   padding: 3.5% 6% 5.5%;
+  flex-direction: column;
+  justify-content: center;
+}
+/* Reveal writes display:block inline on the active section and display:none
+   on the rest, so centring has to claim the flex display with !important —
+   scoped to .present, because an unscoped !important would un-hide every
+   slide in the deck. */
+.reveal .slides > section.slide.present {
+  display: flex !important;
 }
 .reveal {
   color: var(--ssus-ink);
@@ -126,10 +138,24 @@ html.ssus-dark {
 .reveal kbd {
   font-family: "IBM Plex Mono", monospace;
 }
+/* One code surface, not two: quarto wraps every block in a
+   div.sourceCode painted with its own $code-block-bg (#F1F3F5) and a
+   derived border (#A3BDD3, not a brand token) — both show as a grey plate
+   outlined inside a callout's tint. The wrapper goes bare; `pre` carries
+   the token alone. */
+.reveal div.sourceCode {
+  background: transparent;
+  border: none;
+}
 .reveal pre {
   background: var(--ssus-code-bg);
   box-shadow: none;
   padding: 0.6em 0.75em;
+}
+/* inside a callout the callout's own tint is the surface; a second code
+   tint would stack to ~10% ink */
+.reveal .callout-content pre {
+  background: transparent;
 }
 
 /* Title slide — the blueprint hero (Surface 05): blueprint ground with the
@@ -234,7 +260,7 @@ html.ssus-dark #title-slide {
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--ssus-ink);
-  font-size: 1.35em;
+  font-size: 1.5em;
   border-bottom: 1px solid var(--ssus-rule);
   padding-bottom: 0.25em;
   margin-bottom: 0.6em;
@@ -255,6 +281,14 @@ html.ssus-dark #title-slide {
   color: var(--ssus-secondary);
   margin-top: 1.1em;
 }
+
+/* Figures ride the page ground. A matplotlib PNG carries a white facecolor,
+   which on plan-white reads as a stray lighter rectangle; the fix is at the
+   figure, not in CSS — set figure.facecolor to the deck ground (light:
+   #F8F9F7, dark: ssus-dark.mplstyle's #101821, which already does this).
+   CSS blending is not an option: each reveal section is its own stacking
+   context with a transparent background, so mix-blend-mode has no backdrop
+   to blend against. */
 
 /* Tables — booktabs: weightless cells, ink rules above and below. */
 .reveal table {
@@ -286,18 +320,42 @@ html.ssus-dark #title-slide {
   color: var(--ssus-secondary);
 }
 
-/* Corner chrome — small mark bottom-left, muted number bottom-right.
-   Quarto's footer machinery parks both outside .reveal (body-level divs),
-   and its own CSS positions them; the !important flags win that race.
-   Quarto 1.10 defaults the logo to bottom-right; move it. */
+/* Corner chrome — the horizontal lockup bottom-left, muted number
+   bottom-right. The footer carries the *horizontal* lockup, not the stacked
+   one: the stacked lockup is three lines of wordmark, and squeezed to a
+   corner size its text is unreadable. Quarto's footer machinery parks both
+   outside .reveal (body-level divs), and its own CSS positions them; the
+   !important flags win that race. Quarto 1.10 defaults the logo to
+   bottom-right; move it. */
 .slide-logo {
-  left: 14px !important;
+  left: 16px !important;
   right: auto !important;
-  bottom: 12px !important;
+  bottom: 14px !important;
   top: auto !important;
-  height: 22px !important;
+  height: 34px !important;
   width: auto !important;
   max-width: none !important;
+}
+/* reveal-menu parks its hamburger at the same bottom-left spot and sat on top
+   of the lockup. It has to stay visible somewhere: that menu is Quarto's mode
+   switcher — speaker view, slide overview, PDF export, keyboard help — not
+   slide navigation, so hiding it hides speaker view. It moves to the footer's
+   right side, left of the slide number. (`M` also toggles it.) */
+.slide-menu-button {
+  left: auto !important;
+  right: 104px !important;
+  bottom: 8px !important;
+  top: auto !important;
+}
+.slide-menu-button a {
+  color: var(--ssus-secondary) !important;
+}
+/* Quarto wraps both the page number and the menu button in anchors, so the
+   prose link rule (graticule underline) was drawing a rule under each piece
+   of chrome. Chrome is not prose. */
+.slide-number a,
+.slide-menu-button a {
+  text-decoration: none !important;
 }
 /* hidden on the hero: the slide-logo element lives at body level, outside
    the title section, so a descendant selector can't reach it — key on the
@@ -312,6 +370,12 @@ body:has(#title-slide.present) .slide-logo {
   font-family: "IBM Plex Mono", monospace !important;
   font-size: 0.55em !important;
   color: var(--ssus-secondary) !important;
+}
+/* The hero does not read the semantic roles: its ground is fixed blueprint
+   (night), where slate is 2.1:1 — illegible. The number follows the hero's
+   detail tone instead, keyed on the body state like the logo above. */
+body:has(#title-slide.present) .slide-number {
+  color: var(--ssus-detail) !important;
 }
 
 /* Links — ink underline on a graticule trace, the masthead's link grammar. */

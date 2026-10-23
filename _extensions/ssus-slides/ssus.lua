@@ -10,7 +10,7 @@
 --      The class lands before first paint and works for decks without a
 --      title slide.
 --   2. A script at the end of body that swaps the format's default
---      content-slide mark (ssus-mark-light.svg) for its night variant.
+--      content-slide lockup (ssus-horizontal-light.svg) for its night variant.
 --      Quarto injects the .slide-logo <img> itself, after document filters
 --      run, so a metadata rewrite here would never reach it — the swap has
 --      to happen in the DOM. Only the sentinel filename is touched: a deck
@@ -26,7 +26,7 @@ local function ssus_dark(meta)
   quarto.doc.include_text("after-body", [[
 <script>(function () {
   document.querySelectorAll("img.slide-logo").forEach(function (img) {
-    img.src = img.src.replace(/ssus-mark-light\.svg$/, "ssus-mark-night.svg");
+    img.src = img.src.replace(/ssus-horizontal-light\.svg$/, "ssus-horizontal-night.svg");
   });
 })();
 </script>]])

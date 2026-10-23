@@ -24,7 +24,7 @@ muted. Chrome is four corners only.
 
 ### A level-three heading
 
-Body text set at the deck root — 32 px so dense slides stay legible from the
+Body text set at the deck root — 34 px so dense slides stay legible from the
 back row. **Bold** and *italic* carry inline emphasis; a
 [link](https://spatialscience.org) goes ink-blue with a graticule underline.
 
@@ -43,6 +43,8 @@ Default bullets:
 - A second, tested against a null.
 - A third, reported with its own uncertainty.
 
+## Lists — the series palette
+
 Bullets cycling the series palette (`.ssus-series-tints`):
 
 ::: {.ssus-series-tints}
@@ -54,25 +56,24 @@ Bullets cycling the series palette (`.ssus-series-tints`):
 - Green
 :::
 
-And an <span class="alert">alert</span> span flags a unit worth your eye —
-signal orange, data accent only, never chrome.
+An <span class="alert">alert</span> span flags a unit worth your eye.
 
 ## A figure in the series palette
 
 ```{python}
 #| echo: false
-#| out-width: 68%
-#| fig-height: 2.6
 import matplotlib.pyplot as plt
 import numpy as np
 
 plt.rcParams.update({
     "font.family": "serif",
     "figure.dpi": 150,
+    "figure.facecolor": "#F8F9F7",   # plan-white: the figure rides the page
+    "axes.facecolor": "#F8F9F7",
 })
 SERIES = ["#0467A8", "#E0691E", "#14938D", "#AC8205", "#914A8C", "#58994A"]
 x = np.linspace(0, 10, 200)
-fig, ax = plt.subplots(figsize=(6.4, 2.4))
+fig, ax = plt.subplots(figsize=(7.6, 2.2))
 for i, c in enumerate(SERIES):
     ax.plot(x, (x * (i + 1) ** 0.5) % 8 + i * 0.4, color=c, lw=2, label=f"series {i + 1}")
 ax.set_xlabel("x")

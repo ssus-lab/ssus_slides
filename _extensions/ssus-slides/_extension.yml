@@ -37,7 +37,7 @@ contributes:
       theme: [default, ssus-slides.scss]
       filters: [ssus.lua]
       template-partials: [title-slide.html]
-      logo: ssus-mark-light.svg
+      logo: ssus-horizontal-light.svg
       width: 1280
       height: 720
       margin: 0.0
@@ -80,6 +80,8 @@ contributes:
         - mathjax-config.js
         - ssus-mark-light.svg
         - ssus-mark-night.svg
+        - ssus-horizontal-light.svg
+        - ssus-horizontal-night.svg
         - fonts/LibreFranklin-Regular.ttf
         - fonts/LibreFranklin-Italic.ttf
         - fonts/LibreFranklin-SemiBold.ttf

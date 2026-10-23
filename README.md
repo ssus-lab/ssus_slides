@@ -35,18 +35,23 @@ Render from the repo root (`quarto render`) and screenshot every slide with
 Everything else is core Quarto: `title`/`subtitle`/`author`/`institute`/`date`
 land on the hero; `logo`, `footer`, `title-slide-attributes`, `incremental`,
 `scrollable`, and reveal's other knobs work as documented. The default
-`logo` is the format's own `ssus-mark-light.svg` (a deck that names its own
-`logo` keeps it; in a dark deck the format swaps only its own default for the
-night mark).
+`logo` is the format's own `ssus-horizontal-light.svg` (a deck that names its
+own `logo` keeps it; in a dark deck the format swaps only its own default for
+the night lockup).
 
 ## What the format fixes
 
 - **Geometry**: deck box = the viewport exactly (1280×720 at margin 0), and
   content slides pad themselves — no white ring around full-bleed heroes, no
   neighboring slide peeking through an un-covered strip.
-- **Corner chrome**: the mark sits bottom-left and the slide number
-  bottom-right in muted mono; both are hidden where they don't belong
-  (no mark rides the hero). Quarto's progress bar is off — corners only.
+- **Corner chrome**: the horizontal lockup sits bottom-left (the stacked
+  lockup is three lines of wordmark and goes illegible at corner size) and the
+  slide number bottom-right in muted mono; both are hidden where they don't
+  belong (no lockup rides the hero). Quarto's progress bar is off.
+  reveal-menu's hamburger moves next to the slide number: it used to sit on
+  top of the lockup, and it has to stay visible because that menu is Quarto's
+  mode switcher — speaker view, slide overview, PDF export — not slide
+  navigation. Chrome carries no link underline.
 - **Fonts**: Libre Franklin (400/600/800, roman+italic) and IBM Plex Mono
   (400/600) vendored as TTFs with their OFL licenses, no Google Fonts
   `@import` (which fails offline). `format-resources` copies the font files
