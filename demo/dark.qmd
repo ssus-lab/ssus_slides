@@ -1,8 +1,8 @@
 ---
 title: "The structure of cities, measured"
-subtitle: "SSUS slides, dark deck — ssus-dark: true"
+subtitle: "The same format on a dark deck"
 author: "Elijah Knaap"
-institute: "Spatial Science and Urban Systems · UC Irvine"
+institute: "Department of Urban Planning and Public Policy · UC Irvine"
 date: today
 ssus-series: "SSUS working paper series"
 ssus-dark: true
@@ -10,43 +10,84 @@ format: ssus-slides-revealjs
 bibliography: refs.bib
 ---
 
-## About this deck
+```{python}
+#| include: false
+from pathlib import Path
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
 
-Same content as the light flagship, but the whole deck rides
-`ssus-dark: true`: night ground, haze text, sky links, the night series
-palette, and the night-stacked lockup on the hero.
+ext = next(p / "_extensions/ssus-slides" for p in [Path.cwd(), *Path.cwd().parents]
+           if (p / "_extensions/ssus-slides").is_dir())
+for f in ext.glob("fonts/LibreFranklin-*.ttf"):
+    font_manager.fontManager.addfont(f)
+plt.style.use(ext / "ssus-slides-dark.mplstyle")
+```
 
-There is no `prefers-color-scheme` anywhere — a deck is a shared-room
-artifact; the room picks once, at `ssus-dark:`, not per audience laptop.
+## A dark deck
 
-## Dark tokens
+`ssus-dark: true` sets the page on Night: haze text, sky links, and the night
+series palette. The title slide and the section slides stay on Blueprint, as
+the lab site's bands do in dark mode.
+
+There is no `prefers-color-scheme` anywhere. A deck is shown in a room, and
+the room chooses once.
+
+# Tokens
+
+## Text, links, and code
 
 [Links](https://spatialscience.org) go sky on night; hairlines drop to the
 dark grid color.
 
-Bullets cycling the night series palette:
+```python
+import numpy as np
 
-::: {.ssus-series-tints}
-- Series blue
-- Dark signal
-- Teal
-- Gold
-- Plum
-- Green
+d = np.linspace(0.5, 8, 120)  # neighborhood radius, km
+h = 0.42 * np.exp(-d / 2.6) + 0.12
+print(f"{h.max():.3f}")
+```
+
+## A figure on night
+
+```{python}
+#| echo: false
+#| fig-alt: "Four lines, one per metropolitan region, each showing the segregation index falling as the neighborhood radius grows."
+import numpy as np
+
+d = np.linspace(0.5, 8, 120)
+regions = {"Chicago": (0.36, 3.0, 0.175), "Houston": (0.32, 1.2, 0.033),
+           "Atlanta": (0.30, 2.0, 0.13), "Phoenix": (0.20, 4.0, 0.06)}
+fig, ax = plt.subplots()
+for name, (a, b, c) in regions.items():
+    h = a * np.exp(-d / b) + c
+    line, = ax.plot(d, h)
+    ax.annotate(name, (d[-1], h[-1]), xytext=(8, 0), textcoords="offset points",
+                va="center", color=line.get_color(), fontweight=600)
+ax.set_xlabel("Neighborhood radius (km)")
+ax.set_ylabel(r"$\tilde{H}(d)$")
+ax.set_xlim(0, 9.4)
+ax.set_ylim(0, 0.5)
+plt.show()
+```
+
+## Table and math
+
+| Region  | $\tilde{H}$, 1 km | $\tilde{H}$, 4 km |
+|---------|------------------:|------------------:|
+| Chicago | 0.320 | 0.226 |
+| Houston | 0.206 | 0.098 |
+
+: Night-ground tables keep their rules
+
+$$p = \frac{1}{B} \sum_{b=1}^{B} \mathbb{1}\!\left( \lvert \hat{D}^{*}_b \rvert \geq \lvert \hat{D} \rvert \right)$$
+
+## Blueprint on night {.ssus-blueprint}
+
+::: {.ssus-lede}
+Blueprint is the identity ground in both modes.
 :::
 
-## Table and math stay legible
-
-| Region | Population | Share in principal city |
-|--------|-----------:|------------------------:|
-| Dallas | 7,543,340 | 24% |
-| Houston | 7,048,954 | 68% |
-
-: Night-ground tables keep the ink rules
-
-$$p = \frac{1}{B}\,\sum_{b=1}^{B} \mathbb{1}\!\left( \lvert \hat{D}^{*}_b \rvert \geq \lvert \hat{D} \rvert \right)$$
-
-Cited again to keep the references slide [@cortes2026segregation].
+Cited to keep the references slide [@cortes2026segregation].
 
 ## References
 

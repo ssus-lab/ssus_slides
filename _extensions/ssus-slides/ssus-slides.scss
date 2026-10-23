@@ -1,445 +1,819 @@
-/* ssus-slides.scss — the SSUS slide identity, loosely following the design
-   approach of grantmcdermott/quarto-revealjs-clean's clean.scss (one theme
-   file, layers over `default`, low chrome): the look is entirely SSUS.
+/* ssus-slides.scss — the SSUS slide identity.
+
+   One theme file layered over `default`, after grantmcdermott/
+   quarto-revealjs-clean (MIT); the identity is entirely SSUS.
 
    Token sources (ssus-lab-brand):
-     - palette   quarto/_brand.yml + _brand-dark.yml
-     - slide grammar  sheets/ssus-identity-mocks.html — Surface 04 (course
-       title slide: mono uppercase eyebrow, Franklin 800 title, muted detail,
-       corner mark) and Surface 05 (blueprint hero with the 30px graticule
-       grid at rgba(248,249,247,.06))
-     - dark ground rules: night is the dark PAGE ground (#101821, mplstyle's
-       figure ground), never blueprint — blueprint remains the blueprint of
-       the reversed lockups (the hero) and, via ssus-dark, of nothing else.
-   Opt-in dark decks flip the semantic custom properties on html.ssus-dark
-   (see ssus.lua); there is no prefers-color-scheme anywhere.               */
+     palette       quarto/_brand.yml, quarto/_brand-dark.yml, README → Color
+     figure inks   matplotlib/ssus.mplstyle, ssus-dark.mplstyle
+     slide grammar sheets/ssus-identity-mocks.html — Surface 04 (mono
+                   eyebrow, Franklin 800 title, mark in the corner) and
+                   Surface 05 (blueprint ground, 30 px graticule grid at
+                   rgba(248,249,247,.06))
+     site grammar  ssus-website/assets/css/main.css (eyebrow, hairline rules
+                   at rgba(248,249,247,.28) on blueprint, blueprint bands kept
+                   blueprint in dark mode)
+
+   Grounds. Plan White is the page; Night is the page of a dark deck
+   (`ssus-dark: true`). Blueprint is the identity ground in both: the title
+   slide, every section slide, and any slide marked `.ssus-blueprint`. Those
+   grounds are painted through reveal's background layer (ssus.lua writes
+   data-background-color and -gradient), so they fill the whole screen at any
+   aspect ratio and in PDF export; painting the section itself letterboxed
+   the hero on 16:10 screens.
+
+   Every rule below reads var(--ssus-*). A ground is a set of values for
+   those properties: :root (plan white), html.ssus-dark (night), and
+   .ssus-ground-blueprint (blueprint). There is no prefers-color-scheme:
+   a deck is shown in a room and must not flip with a laptop setting.      */
 
 /*-- scss:defaults --*/
 
-/* SSUS brand palette */
-$ssus-blueprint:   #0F3B5E;  /* the mark, headings' link accent, hero ground */
-$ssus-survey-ink:  #16232E;  /* body text */
-$ssus-plan-white:  #F8F9F7;  /* page ground */
-$ssus-graticule:   #8FA1AB;  /* rules, axes, secondary marks */
-$ssus-slate:       #5C6B74;  /* secondary text, tick labels */
-$ssus-sky:         #9DBBD6;  /* secondary text on blueprint */
-$ssus-signal:      #E0691E;  /* data accent only — the flagged unit */
+/* Brand palette (_brand.yml) */
+$ssus-blueprint:  #0F3B5E;
+$ssus-survey-ink: #16232E;
+$ssus-plan-white: #F8F9F7;
+$ssus-graticule:  #8FA1AB;
+$ssus-slate:      #5C6B74;
+$ssus-sky:        #9DBBD6;
+$ssus-signal:     #E0691E;
 
-/* dark-mode extras (_brand-dark.yml + ssus-dark.mplstyle) */
-$ssus-night:       #101821;  /* dark page ground */
-$ssus-haze:        #E6EBEA;  /* dark foreground */
-$ssus-sky-link:    #7FAFD4;  /* dark links */
-$ssus-signal-dark: #E8813D;  /* dark signal */
-$ssus-night-grid:  #25313B;  /* dark hairlines, from ssus-dark.mplstyle's grid */
+/* Dark companions (_brand-dark.yml, ssus-dark.mplstyle) */
+$ssus-night:       #101821;
+$ssus-haze:        #E6EBEA;
+$ssus-sky-link:    #7FAFD4;
+$ssus-signal-dark: #E8813D;
+$ssus-night-grid:  #25313B;
 
-/* matplotlib series palettes (ssus_style.py) — data colors for figures and
-   the optional bullet tints; Signal (s2) is also .alert's color in light */
-$ssus-series-1: #0467A8;  $ssus-series-2: #E0691E;  $ssus-series-3: #14938D;
-$ssus-series-4: #AC8205;  $ssus-series-5: #914A8C;  $ssus-series-6: #58994A;
+/* Hairlines: the site's --rule (#D5DCE0) on plan white; on blueprint the
+   site's band divider */
+$ssus-hairline:           #D5DCE0;
+$ssus-hairline-blueprint: rgba(248, 249, 247, 0.28);
 
-/* semantic roles — the only thing the dark flip retunes */
-$ssus-ground:    $ssus-plan-white;
-$ssus-ink:       $ssus-survey-ink;
-$ssus-secondary: $ssus-slate;
-$ssus-rule:      $ssus-graticule;
-$ssus-link:      $ssus-blueprint;
-$ssus-signal-x:  $ssus-signal;
-$ssus-code-bg:   rgba(22, 35, 46, 0.05);
+/* Series palettes (matplotlib/ssus_style.py SERIES) */
+$ssus-series:      #0467A8, #E0691E, #14938D, #AC8205, #914A8C, #58994A;
+$ssus-series-dark: #2A76C3, #DE6E2C, #29A895, #B68B16, #AB61A5, #5B9C4D;
 
-/* reveal/bootstrap tokens */
-$body-bg: $ssus-ground;
-$body-color: $ssus-ink;
-$link-color: $ssus-link;
-$presentation-font-size-root: 34px;               /* clean's lever, down from 40 */
-$presentation-heading-font: "Libre Franklin", sans-serif;
-$presentation-heading-color: $ssus-ink;
+/* Reveal and Bootstrap */
+$body-bg: $ssus-plan-white;
+$body-color: $ssus-survey-ink;
+$link-color: $ssus-blueprint;
+$font-family-sans-serif: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace: "IBM Plex Mono", Menlo, monospace;
+$presentation-font-size-root: 34px;
+$presentation-line-height: 1.4;
+$presentation-heading-font: $font-family-sans-serif;
+$presentation-heading-color: $ssus-survey-ink;
 $presentation-heading-font-weight: 800;
-$presentation-heading-line-height: 1.25;
-
-/* quarto callout theme vars — the note color keys the callout css wholesale
-   (border, tint, icon); the other callout types keep stock colors */
+$presentation-heading-line-height: 1.12;
+$presentation-heading-letter-spacing: -0.015em;
+$presentation-heading-text-transform: none;
+$presentation-title-slide-text-align: left;
+$presentation-slide-text-align: left;
+$code-block-font-size: 0.6em;
+$code-block-bg: transparent;
+$code-block-border-color: transparent;
 $callout-color-note: $ssus-blueprint;
 
 /*-- scss:rules --*/
 
-/* Runtime palette: every rule below consumes var(--ssus-*), never raw hex
-   (except the hero, which is fixed blueprint/plan-white identity). */
+/* ── Grounds ─────────────────────────────────────────────────────────── */
+
 :root {
-  --ssus-ground: #{$ssus-ground};
-  --ssus-ink: #{$ssus-ink};
-  --ssus-secondary: #{$ssus-secondary};
-  --ssus-rule: #{$ssus-rule};
-  --ssus-link: #{$ssus-link};
-  --ssus-signal: #{$ssus-signal-x};
-  --ssus-eyebrow: #9FB8CB;          /* the mock's sky tint for the eyebrow line */
-  --ssus-detail: #B9CBD9;           /* muted identity text on the blueprint hero */
-  --ssus-code-bg: #{$ssus-code-bg};
-  --ssus-series-1: #{$ssus-series-1};
-  --ssus-series-2: #{$ssus-series-2};
-  --ssus-series-3: #{$ssus-series-3};
-  --ssus-series-4: #{$ssus-series-4};
-  --ssus-series-5: #{$ssus-series-5};
-  --ssus-series-6: #{$ssus-series-6};
+  --ssus-ground: #{$ssus-plan-white};
+  --ssus-ink: #{$ssus-survey-ink};
+  --ssus-secondary: #{$ssus-slate};
+  --ssus-rule: #{$ssus-hairline};
+  --ssus-rule-strong: #{$ssus-survey-ink};
+  --ssus-accent: #{$ssus-blueprint};
+  --ssus-link-trace: #{$ssus-graticule};
+  --ssus-marker: #{$ssus-blueprint};
+  --ssus-signal: #{$ssus-signal};
+  --ssus-tint: rgba(15, 59, 94, 0.05);      /* blueprint at 5% */
+  /* code tokens: each passes 4.5:1 on its ground */
+  --ssus-code-keyword: #{$ssus-blueprint};
+  --ssus-code-string: #{nth($ssus-series, 5)};
+  --ssus-code-number: #{nth($ssus-series, 1)};
+  --ssus-code-comment: #{$ssus-slate};
+  @for $i from 1 through 6 {
+    --ssus-series-#{$i}: #{nth($ssus-series, $i)};
+  }
 }
 
-/* Opt-in dark deck (ssus-dark: true → html.ssus-dark via ssus.lua).
-   Night ground, haze ink, sky links; the series palette swaps to its
-   night-validated set. No prefers-color-scheme anywhere. */
 html.ssus-dark {
   --ssus-ground: #{$ssus-night};
   --ssus-ink: #{$ssus-haze};
   --ssus-secondary: #{$ssus-graticule};
   --ssus-rule: #{$ssus-night-grid};
-  --ssus-link: #{$ssus-sky-link};
+  --ssus-rule-strong: #{$ssus-haze};
+  --ssus-accent: #{$ssus-sky-link};
+  --ssus-link-trace: #{$ssus-slate};
+  --ssus-marker: #{$ssus-sky-link};
   --ssus-signal: #{$ssus-signal-dark};
-  --ssus-eyebrow: #{$ssus-sky-link};
-  --ssus-detail: #{$ssus-sky};
-  --ssus-code-bg: rgba(230, 235, 234, 0.06);
-  --ssus-series-1: #2A76C3;
-  --ssus-series-2: #DE6E2C;
-  --ssus-series-3: #29A895;
-  --ssus-series-4: #B68B16;
-  --ssus-series-5: #AB61A5;
-  --ssus-series-6: #5B9C4D;
+  --ssus-tint: rgba(230, 235, 234, 0.06);   /* haze at 6% */
+  --ssus-code-keyword: #{$ssus-sky-link};
+  --ssus-code-string: #{nth($ssus-series-dark, 3)};
+  --ssus-code-number: #{nth($ssus-series-dark, 4)};
+  --ssus-code-comment: #{$ssus-graticule};
+  @for $i from 1 through 6 {
+    --ssus-series-#{$i}: #{nth($ssus-series-dark, $i)};
+  }
 }
 
-/* Container */
+/* Blueprint grounds keep their values in dark decks too: the selector is a
+   descendant of html, so it outranks html.ssus-dark wherever it applies. */
+.reveal .slides section.ssus-ground-blueprint {
+  --ssus-ink: #{$ssus-plan-white};
+  --ssus-secondary: #{$ssus-sky};
+  --ssus-rule: #{$ssus-hairline-blueprint};
+  --ssus-rule-strong: #{$ssus-plan-white};
+  --ssus-accent: #{$ssus-sky};
+  --ssus-link-trace: rgba(157, 187, 214, 0.5);
+  --ssus-marker: #{$ssus-sky};
+  --ssus-tint: rgba(248, 249, 247, 0.07);
+  --ssus-code-keyword: #{$ssus-sky};
+  --ssus-code-string: #{$ssus-plan-white};
+  --ssus-code-number: #{$ssus-sky};
+  --ssus-code-comment: #{$ssus-graticule};
+}
+
 .reveal-viewport {
   background-color: var(--ssus-ground);
 }
-/* the stack: clip it at the deck box so a neighboring slide never peeks
-   through an un-covered strip of viewport */
+
+/* ── Geometry ────────────────────────────────────────────────────────── */
+
+/* The deck box is the 1280×720 canvas (_extension.yml sets width, height,
+   margin 0), so px below are canvas units and scale with the deck. Clip
+   the stack at the box so a neighbor never shows through. */
 .reveal .slides {
   overflow: hidden;
 }
-/* content slides pad themselves; the deck box is the full viewport, and a
-   short slide sits optically centred instead of top-anchored over a dead
-   lower half. The hero is `#title-slide`, not a `.slide`, so it keeps its
-   own composition. */
-.reveal .slides > section.slide {
+
+/* Content slides: the title sits at the same place on every slide. Nothing
+   is centred vertically; a short slide leaves its space at the bottom. The
+   top band holds the running head. */
+.reveal .slides section.slide {
   box-sizing: border-box;
-  padding: 3.5% 6% 5.5%;
-  flex-direction: column;
-  justify-content: center;
+  padding: 72px 76px 64px;
 }
-/* Reveal writes display:block inline on the active section and display:none
-   on the rest, so centring has to claim the flex display with !important —
-   scoped to .present, because an unscoped !important would un-hide every
-   slide in the deck. */
-.reveal .slides > section.slide.present {
-  display: flex !important;
+
+/* PDF export (?print-pdf) sets every section's padding to 0 !important and
+   re-centres .center slides by its own measure, which pushed the title
+   slide 154 px down and its foot off the page. Restore both. */
+html.reveal-print .reveal .slides section.slide {
+  padding: 72px 76px 64px !important;
 }
+html.reveal-print .reveal .slides section.slide.level1 {
+  padding: 0 76px !important;
+}
+html.reveal-print .reveal .slides section#title-slide {
+  top: 0 !important;
+  height: 100% !important;
+  padding: 58px 76px 46px !important;
+}
+
+/* ── Type ────────────────────────────────────────────────────────────── */
+
 .reveal {
   color: var(--ssus-ink);
-  font-family: "Libre Franklin", sans-serif;
+  font-family: $font-family-sans-serif;
+  font-feature-settings: "kern", "liga";
 }
-.reveal code,
-.reveal pre,
-.reveal kbd {
-  font-family: "IBM Plex Mono", monospace;
+.reveal p {
+  margin: 0 0 0.6em;
 }
-/* One code surface, not two: quarto wraps every block in a
-   div.sourceCode painted with its own $code-block-bg (#F1F3F5) and a
-   derived border (#A3BDD3, not a brand token) — both show as a grey plate
-   outlined inside a callout's tint. The wrapper goes bare; `pre` carries
-   the token alone. */
-.reveal div.sourceCode {
-  background: transparent;
-  border: none;
-}
-.reveal pre {
-  background: var(--ssus-code-bg);
-  box-shadow: none;
-  padding: 0.6em 0.75em;
-}
-/* inside a callout the callout's own tint is the surface; a second code
-   tint would stack to ~10% ink */
-.reveal .callout-content pre {
-  background: transparent;
+.reveal strong {
+  font-weight: 600;
 }
 
-/* Title slide — the blueprint hero (Surface 05): blueprint ground with the
-   30px graticule grid, mono eyebrow, 800 title, muted detail, stacked
-   lockup. In dark decks the hero retints to night, same grid. The identity
-   colors stay fixed: this slide does not read the semantic roles. */
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  color: var(--ssus-ink);
+  text-wrap: balance;
+}
+/* The slide title. Heading sizes are canvas px, not em: Quarto re-enlarges
+   headings inside a .smaller slide (it marks the references slide so), and
+   a title must not change size from one slide to the next. */
+.reveal h2,
+.reveal .slides section.smaller h2 {
+  font-size: 45px;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  max-width: 28ch;
+  margin: 0 0 0.62em;
+}
+.reveal h3,
+.reveal .slides section.smaller h3 {
+  font-size: 31px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: var(--ssus-accent);
+  margin: 0.9em 0 0.3em;
+}
+.reveal h2 + h3 {
+  margin-top: 0;
+}
+/* the masthead's block label: a mono annotation layer */
+.reveal h4 {
+  font-family: $font-family-monospace;
+  font-size: 0.46em;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ssus-secondary);
+  margin: 1.4em 0 0.5em;
+}
+
+/* The running head: the current section, set like the site's eyebrow, in
+   the top band of every content slide (ssus.lua writes data-ssus-section). */
+.reveal .slides section.slide[data-ssus-section]::before {
+  content: attr(data-ssus-section);
+  position: absolute;
+  top: 34px;
+  left: 76px;
+  font-family: $font-family-monospace;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ssus-secondary);
+}
+
+/* Lists */
+.reveal ul,
+.reveal ol {
+  margin: 0 0 0.6em 0;
+  padding-left: 1.1em;
+}
+.reveal ul ul,
+.reveal ol ol,
+.reveal ul ol,
+.reveal ol ul {
+  font-size: 0.88em;
+  margin: 0.2em 0 0.1em;
+}
+.reveal li {
+  margin: 0 0 0.32em;
+  padding-left: 0.15em;
+}
+.reveal li > p {
+  margin: 0;
+}
+.reveal ul > li::marker {
+  color: var(--ssus-marker);
+}
+.reveal ol > li::marker {
+  color: var(--ssus-marker);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Links: accent text on a graticule trace, the masthead's link grammar */
+.reveal a {
+  color: var(--ssus-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--ssus-link-trace);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+.reveal a:hover {
+  color: var(--ssus-accent);
+  text-decoration-color: currentColor;
+}
+
+/* Quotation: a quiet rule and the secondary voice */
+.reveal blockquote {
+  width: auto;
+  margin: 0.4em 0 0.8em;
+  padding: 0.1em 0 0.1em 0.9em;
+  border-left: 3px solid var(--ssus-accent);
+  background: none;
+  box-shadow: none;
+  font-style: italic;
+  color: var(--ssus-secondary);
+}
+.reveal blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Footnotes, asides, and the small voice */
+.reveal .slide aside,
+.reveal .slide .aside,
+.reveal .footnotes {
+  font-size: 0.55em;
+  color: var(--ssus-secondary);
+}
+.reveal .ssus-small {
+  font-size: 0.75em;
+}
+.reveal .ssus-muted {
+  color: var(--ssus-secondary);
+}
+/* a lede: the one sentence a slide is for, set larger */
+.reveal .ssus-lede {
+  font-size: 1.2em;
+  font-weight: 600;
+  line-height: 1.3;
+  max-width: 30ch;
+}
+
+/* ── Title slide ─────────────────────────────────────────────────────── */
+
+/* Do not set position on #title-slide. Reveal positions every top-level
+   section itself; forcing this one into flow shifts the anchor of every
+   slide after it. The section is already a containing block. */
 #title-slide {
-  /* Do not set position here: reveal 5 lays out top-level sections itself
-     (they are absolutely positioned by its JS), and forcing the title back
-     into flow breaks every later slide's anchor. The section is a positioned
-     ancestor as it is, so the absolute .ssus-lockup anchors to it. */
-  text-align: left;
   box-sizing: border-box;
   height: 100%;
-  padding: 7% 6%;
-  background-color: $ssus-blueprint;
-  background-image:
-    repeating-linear-gradient(0deg,  rgba(248, 249, 247, 0.06) 0 1px, transparent 1px 30px),
-    repeating-linear-gradient(90deg, rgba(248, 249, 247, 0.06) 0 1px, transparent 1px 30px);
+  padding: 58px 76px 46px;
+  text-align: left;
 }
-html.ssus-dark #title-slide {
-  background-color: $ssus-night;
+#title-slide .ssus-hero {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+#title-slide .ssus-hero-head {
+  margin: auto 0;
+  padding-bottom: 24px;
 }
 #title-slide .ssus-eyebrow {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 500;
+  font-family: $font-family-monospace;
+  font-size: 16px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.13em;
-  font-size: 0.44em;
-  color: var(--ssus-eyebrow);
-  margin-bottom: 1em;
+  color: $ssus-sky;
+  margin: 0 0 22px;
 }
 #title-slide h1.title {
-  color: $ssus-plan-white;
+  font-size: 2.05em;
   font-weight: 800;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
-  font-size: 1.9em;
-  margin: 0 0 0.4em 0;
-  max-width: 24ch;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: $ssus-plan-white;
+  max-width: 20ch;
+  margin: 0;
+  text-wrap: balance;
 }
-/* Detail lines carry clean's hierarchy, in SSUS tokens: the subtitle is an
-   italic accent; authors are the strongest detail line (full identity
-   color, upright weight 600, side by side in one row); institute and date
-   demote by italic and tone at near the same size, not by shrink alone. */
+/* The detail lines carry clean's hierarchy (Eli, 2026-10-21): the subtitle
+   is an italic accent; the authors are the strongest detail line, upright
+   600 in the title's color, side by side; institute and date demote by
+   italic and tone at near the same size, not by shrinking. */
 #title-slide .subtitle {
-  color: var(--ssus-detail);
+  font-size: 0.9em;
   font-style: italic;
   font-weight: 400;
-  font-size: 0.9em;
-  margin-top: 0;
-  margin-bottom: 1.1em;
+  line-height: 1.3;
+  color: $ssus-sky;
+  max-width: 36ch;
+  margin: 0.55em 0 0;
 }
-#title-slide .author,
-#title-slide .quarto-title-author-name {
-  color: $ssus-plan-white;
-  font-weight: 600;
-  font-size: 0.85em;
+#title-slide .ssus-hero-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  border-top: 1px solid $ssus-hairline-blueprint;
+  padding-top: 22px;
+}
+#title-slide .ssus-authors {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.3em;
+  margin-bottom: 0.25em;
 }
 #title-slide .author {
-  display: inline-block;
-  margin: 0 1.4em 0.35em 0;
+  font-size: 0.74em;
+  font-weight: 600;
+  color: $ssus-plan-white;
+  margin: 0;
 }
 #title-slide .institute,
-#title-slide .quarto-title-affiliation,
-#title-slide .quarto-title-author-email,
-#title-slide .quarto-title-affiliations {
-  font-style: italic;
-  color: var(--ssus-detail);
-  font-weight: 400;
-  font-size: 0.72em;
-  margin-bottom: 0.3em;
-}
 #title-slide .date {
+  font-size: 0.64em;
   font-style: italic;
-  color: var(--ssus-detail);
-  font-weight: 400;
-  font-size: 0.72em;
-  margin-bottom: 0.3em;
+  color: $ssus-sky;
+  margin: 0.15em 0 0;
 }
-/* the core .slide-logo must never ride the hero beside the lockup */
-#title-slide .slide-logo {
-  display: none !important;
+#title-slide a {
+  color: inherit;
+  text-decoration: none;
 }
-.ssus-lockup {
-  position: absolute;
-  left: 6%;
-  bottom: 7%;
-  height: 110px;
-  width: auto;
+/* The brand's floor for the horizontal lockup is 240 px wide; the file
+   carries its own clear space, so nothing pads it. */
+#title-slide .ssus-lockup {
+  flex: none;
+  width: 264px;
+  height: auto;
+  margin: 0 -10px -8px 0;   /* hang the clear space past the text edge */
 }
 
-/* Headings — flattened hierarchy. In quarto decks the slide title is an h2
-   (`##`); `#` opens a section slide (h1). */
-.reveal h1 {
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--ssus-ink);
-  font-size: 1.75em;
+/* ── Section slides ──────────────────────────────────────────────────── */
+
+/* `# Section` opens a part: blueprint ground, a sheet number, the name.
+   Reveal centres these vertically (quarto gives them .center). */
+.reveal .slides section.slide.level1 {
+  padding-top: 0;
+  padding-bottom: 0;
 }
-.reveal h2 {
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: var(--ssus-ink);
-  font-size: 1.5em;
-  border-bottom: 1px solid var(--ssus-rule);
-  padding-bottom: 0.25em;
-  margin-bottom: 0.6em;
-}
-.reveal h3 {
-  font-weight: 600;
-  color: var(--ssus-link);
-  font-size: 0.85em;
-}
-.reveal h4 {
-  /* the masthead's block-label grammar: a mono annotation layer, not an
-     italic accent */
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.65em;
+.reveal .slides section.slide.level1[data-ssus-part]::before {
+  content: attr(data-ssus-part);
+  display: block;
+  font-family: $font-family-monospace;
+  font-size: 18px;
+  letter-spacing: 0.14em;
   color: var(--ssus-secondary);
-  margin-top: 1.1em;
+  border-top: 1px solid var(--ssus-rule);
+  width: 96px;
+  padding-top: 16px;
+  margin-bottom: 26px;
+}
+.reveal .slides section.slide.level1 h1 {
+  font-size: 1.95em;
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+  margin: 0;
+}
+.reveal .slides section.slide.level1 h1 ~ * {
+  color: var(--ssus-secondary);
+  max-width: 40ch;
+}
+.reveal .slides section.slide.level1 h1 + p {
+  margin-top: 0.7em;
 }
 
-/* Figures ride the page ground. A matplotlib PNG carries a white facecolor,
-   which on plan-white reads as a stray lighter rectangle; the fix is at the
-   figure, not in CSS — set figure.facecolor to the deck ground (light:
-   #F8F9F7, dark: ssus-dark.mplstyle's #101821, which already does this).
-   CSS blending is not an option: each reveal section is its own stacking
-   context with a transparent background, so mix-blend-mode has no backdrop
-   to blend against. */
+/* ── Figures ─────────────────────────────────────────────────────────── */
 
-/* Tables — booktabs: weightless cells, ink rules above and below. */
+/* Figures ride the ground when they are transparent: the extension ships
+   ssus-slides.mplstyle and ssus-slides-dark.mplstyle, which clear the
+   figure face. A figure with an opaque white face can sit on a plate
+   instead (`.ssus-plate`, the site's figure treatment). */
+.reveal .slide img {
+  max-width: 100%;
+}
+.reveal .quarto-figure {
+  margin: 0;
+}
+.reveal .slide figure > figcaption,
+.reveal .slide .figure-caption,
+.reveal .slide p.caption {
+  font-size: 0.58em;
+  line-height: 1.4;
+  color: var(--ssus-secondary);
+  text-align: left;
+  margin-top: 0.5em;
+}
+.reveal .ssus-plate img,
+.reveal img.ssus-plate {
+  background: #FFFFFF;
+  border: 1px solid var(--ssus-rule);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+/* ── Tables: booktabs ────────────────────────────────────────────────── */
+
 .reveal table {
-  font-size: 0.85em;
+  font-size: 0.78em;
   border-collapse: collapse;
+  margin: 0.2em 0 0.8em;
+  font-variant-numeric: tabular-nums;
 }
 .reveal table th,
 .reveal table td {
   border: none;
-  padding: 0.3em 0.6em;
+  padding: 0.32em 0.9em 0.32em 0;
   background-color: transparent;
+  color: var(--ssus-ink);
+}
+.reveal table th:last-child,
+.reveal table td:last-child {
+  padding-right: 0;
 }
 .reveal table thead th {
-  border-top: 2px solid var(--ssus-ink);
-  border-bottom: 1px solid var(--ssus-rule);
   font-weight: 600;
+  border-top: 2px solid var(--ssus-rule-strong);
+  border-bottom: 1px solid var(--ssus-rule-strong);
 }
-.reveal table tbody tr:last-child th,
-.reveal table tbody tr:last-child td {
-  border-bottom: 2px solid var(--ssus-ink);
+.reveal table tbody tr:last-child td,
+.reveal table tbody tr:last-child th {
+  border-bottom: 2px solid var(--ssus-rule-strong);
+}
+.reveal table tbody tr:first-child td {
+  padding-top: 0.5em;
 }
 .reveal table caption {
-  caption-side: bottom;
-  font-family: "IBM Plex Mono", monospace;
-  font-variant: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.55em;
+  caption-side: top;
+  text-align: left;
+  font-size: 0.74em;
+  font-style: italic;
   color: var(--ssus-secondary);
+  padding: 0 0 0.5em;
+}
+.reveal .table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-accent-bg: transparent;
 }
 
-/* Corner chrome — the horizontal lockup bottom-left, muted number
-   bottom-right. The footer carries the *horizontal* lockup, not the stacked
-   one: the stacked lockup is three lines of wordmark, and squeezed to a
-   corner size its text is unreadable. Quarto's footer machinery parks both
-   outside .reveal (body-level divs), and its own CSS positions them; the
-   !important flags win that race. Quarto 1.10 defaults the logo to
-   bottom-right; move it. */
-.slide-logo {
-  left: 16px !important;
+/* ── Math ────────────────────────────────────────────────────────────── */
+
+.reveal mjx-container[display="true"] {
+  margin: 0.5em 0 0.7em !important;
+}
+
+/* ── Code ────────────────────────────────────────────────────────────── */
+
+.reveal code,
+.reveal pre,
+.reveal kbd {
+  font-family: $font-family-monospace;
+}
+/* Quarto wraps a block in div.sourceCode with its own plate and border;
+   the wrapper stays bare and pre carries the one surface. */
+.reveal div.sourceCode {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin: 0.3em 0 0.8em;
+}
+.reveal pre {
+  width: 100%;
+  margin: 0.3em 0 0.8em;
+  box-shadow: none;
+  font-size: 0.6em;
+  line-height: 1.45;
+}
+.reveal div.sourceCode pre {
+  margin: 0;
+}
+.reveal pre code,
+.reveal pre.sourceCode code {
+  display: block;
+  max-height: none;
+  padding: 0.75em 1em;
+  background: var(--ssus-tint);
+  border-left: 3px solid var(--ssus-rule);
+  border-radius: 0 4px 4px 0;
+  color: var(--ssus-ink);
+  white-space: pre;
+}
+.reveal pre code.sourceCode > span,
+.reveal code.sourceCode > span {
+  color: var(--ssus-ink);
+}
+/* inline code */
+.reveal :not(pre) > code {
+  font-size: 0.86em;
+  color: var(--ssus-ink);
+  background: var(--ssus-tint);
+  border-radius: 3px;
+  padding: 0.06em 0.28em;
+}
+.reveal h2 code,
+.reveal h3 code {
+  background: none;
+  padding: 0;
+}
+/* Syntax tokens, on every ground: four roles, the rest ink. */
+.reveal code span.kw,
+.reveal code span.cf,
+.reveal code span.im,
+.reveal code span.ex {
+  color: var(--ssus-code-keyword);
+  font-weight: 600;
+  font-style: normal;
+}
+.reveal code span.st,
+.reveal code span.ss,
+.reveal code span.vs,
+.reveal code span.ch,
+.reveal code span.sc {
+  color: var(--ssus-code-string);
+  font-style: normal;
+}
+.reveal code span.dv,
+.reveal code span.bn,
+.reveal code span.fl,
+.reveal code span.cn {
+  color: var(--ssus-code-number);
+  font-style: normal;
+}
+.reveal code span.co,
+.reveal code span.do,
+.reveal code span.an,
+.reveal code span.cv,
+.reveal code span.in {
+  color: var(--ssus-code-comment);
+  font-style: italic;
+  font-weight: 400;
+}
+.reveal code span.fu,
+.reveal code span.bu,
+.reveal code span.va,
+.reveal code span.at,
+.reveal code span.op,
+.reveal code span.ot,
+.reveal code span.dt,
+.reveal code span.pp {
+  color: var(--ssus-ink);
+  font-weight: 400;
+  font-style: normal;
+}
+.reveal code span.al,
+.reveal code span.er,
+.reveal code span.wa {
+  color: var(--ssus-signal);
+  font-weight: 600;
+}
+/* a highlighted line (code-line-numbers="2") stays legible; the rest dim */
+.reveal pre code .has-line-highlights > span:not(.highlight-line),
+.reveal .has-line-highlights > span:not(.highlight-line) {
+  opacity: 0.35;
+}
+
+/* ── Callouts ────────────────────────────────────────────────────────── */
+
+/* One treatment for every type: a blueprint rule and a tint, the type
+   named in the title. The stock per-type icon is a raster with its color
+   baked in, so it is hidden. */
+/* Quarto sets callouts at 0.7em, like .smaller; 0.86em keeps the body at
+   29 px, and the !important is what beats Quarto's own rule. */
+.reveal div.callout {
+  border: none !important;
+  border-left: 3px solid var(--ssus-accent) !important;
+  border-radius: 0 4px 4px 0;
+  background: var(--ssus-tint);
+  box-shadow: none;
+  margin: 0.5em 0 0.9em;
+  font-size: 0.86em !important;
+}
+.reveal div.callout .callout-content {
+  padding: 0 !important;
+}
+/* revealjs markup: .callout > .callout-body > (.callout-title, .callout-content) */
+.reveal div.callout .callout-body {
+  padding: 0.8em 1.1em 0.85em;
+  background: transparent;
+}
+/* Quarto's own title rules (font-size: inherit, a tinted band, the title p
+   in the main color) carry more specificity than a theme rule should need;
+   the !important flags settle it. */
+.reveal div.callout div.callout-title {
+  display: block;
+  background: transparent !important;
+  border: none;
+  padding: 0 !important;
+  margin: 0 0 0.5em;
+  font-family: $font-family-monospace;
+  font-size: 0.56em !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ssus-accent);
+}
+.reveal div.callout div.callout-title p {
+  margin: 0 !important;
+  color: inherit !important;
+}
+.reveal div.callout .callout-title strong {
+  font-weight: 600;
+}
+.reveal div.callout .callout-icon-container,
+.reveal div.callout .callout-icon {
+  display: none;
+}
+.reveal div.callout p:last-child {
+  margin-bottom: 0;
+}
+/* the callout is set at 0.86em; restore code to the deck's code size */
+.reveal div.callout pre {
+  font-size: 0.7em;
+  margin: 0.5em 0 0;
+}
+.reveal div.callout pre code,
+.reveal div.callout pre.sourceCode code {
+  background: transparent;
+  border-left: none;
+  padding: 0;
+}
+
+/* ── References ──────────────────────────────────────────────────────── */
+
+/* px, because Quarto sets the references slide .smaller and an em would
+   compound with it */
+.reveal #refs,
+.reveal .references {
+  font-size: 21px;
+  line-height: 1.4;
+  margin-left: 0 !important;
+  text-indent: 0 !important;
+}
+/* one hanging indent; Quarto stacks two (.hanging-indent and .csl-entry) */
+.reveal .csl-entry {
+  margin: 0 0 0.6em 0 !important;
+  padding-left: 1.5em;
+  text-indent: -1.5em !important;
+}
+
+/* ── Chrome ──────────────────────────────────────────────────────────── */
+
+/* Bottom left: the mark alone, because the horizontal lockup stops
+   reading below 240 px wide (brand guide) and a corner cannot give it
+   that. Bottom right: the slide number, with reveal-menu's button beside
+   it. That menu is Quarto's mode switcher (speaker view, overview, PDF
+   export), so it moves rather than hides. Quarto parks this chrome in
+   body-level containers and positions it itself; !important wins that. */
+.reveal .slide-logo {
+  left: 18px !important;
   right: auto !important;
-  bottom: 14px !important;
+  bottom: 10px !important;
   top: auto !important;
-  height: 34px !important;
+  height: 46px !important;
+  max-height: none !important;
   width: auto !important;
   max-width: none !important;
 }
-/* reveal-menu parks its hamburger at the same bottom-left spot and sat on top
-   of the lockup. It has to stay visible somewhere: that menu is Quarto's mode
-   switcher — speaker view, slide overview, PDF export, keyboard help — not
-   slide navigation, so hiding it hides speaker view. It moves to the footer's
-   right side, left of the slide number. (`M` also toggles it.) */
-.slide-menu-button {
-  left: auto !important;
-  right: 104px !important;
-  bottom: 8px !important;
-  top: auto !important;
-}
-.slide-menu-button a {
+.reveal .footer {
+  left: 82px !important;
+  right: auto !important;
+  bottom: 23px !important;
+  width: auto !important;
+  text-align: left !important;
+  font-family: $font-family-monospace;
+  font-size: 14px !important;
+  letter-spacing: 0.04em;
   color: var(--ssus-secondary) !important;
 }
-/* Quarto wraps both the page number and the menu button in anchors, so the
-   prose link rule (graticule underline) was drawing a rule under each piece
-   of chrome. Chrome is not prose. */
-.slide-number a,
-.slide-menu-button a {
+.reveal .footer p {
+  margin: 0;
+}
+.reveal .slide-number {
+  top: auto !important;
+  bottom: 20px !important;
+  right: 22px !important;
+  background: none !important;
+  font-family: $font-family-monospace;
+  font-size: 15px !important;
+  letter-spacing: 0.04em;
+  color: var(--ssus-secondary) !important;
+}
+.reveal .slide-number a {
+  color: inherit !important;
   text-decoration: none !important;
 }
-/* hidden on the hero: the slide-logo element lives at body level, outside
-   the title section, so a descendant selector can't reach it — key on the
-   body state (the same :has() mechanic clean's title-logo lua generates) */
-body:has(#title-slide.present) .slide-logo {
+.slide-menu-button {
+  left: auto !important;
+  right: 96px !important;
+  bottom: 9px !important;
+  top: auto !important;
+}
+.slide-menu-button a {
+  color: var(--ssus-secondary) !important;
+  text-decoration: none !important;
+}
+
+/* On blueprint grounds the chrome takes sky, and the light mark, which
+   would vanish there, steps out. Reveal flags those slides with
+   .has-dark-background from their data-background-color. */
+.reveal.has-dark-background .slide-number,
+.reveal.has-dark-background .footer {
+  color: $ssus-sky !important;
+}
+body:has(.reveal.has-dark-background) .slide-menu-button a {
+  color: $ssus-sky !important;
+}
+.reveal.has-dark-background .slide-logo,
+.reveal.has-dark-background .footer {
   display: none !important;
 }
-.slide-number {
-  top: auto !important;
-  bottom: 14px !important;
-  right: 16px !important;
-  font-family: "IBM Plex Mono", monospace !important;
-  font-size: 0.55em !important;
-  color: var(--ssus-secondary) !important;
-}
-/* The hero does not read the semantic roles: its ground is fixed blueprint
-   (night), where slate is 2.1:1 — illegible. The number follows the hero's
-   detail tone instead, keyed on the body state like the logo above. */
+/* The title slide carries the lockup and needs no number. */
 body:has(#title-slide.present) .slide-number {
-  color: var(--ssus-detail) !important;
+  display: none !important;
 }
 
-/* Links — ink underline on a graticule trace, the masthead's link grammar. */
-.reveal a {
-  color: var(--ssus-link);
-  text-decoration: underline;
-  text-decoration-color: var(--ssus-rule);
-  text-underline-offset: 2px;
-}
-.reveal a:hover {
-  color: var(--ssus-link);
-}
+/* ── Utilities ───────────────────────────────────────────────────────── */
 
-/* Utilities */
-.alert {
+/* Signal is a data accent: the one unit a slide is about */
+.reveal .alert {
   color: var(--ssus-signal);
+  font-weight: 600;
 }
 .fg-blueprint { color: $ssus-blueprint; }
-.fg-ink       { color: $ssus-survey-ink; }
-.fg-slate     { color: $ssus-slate; }
+.fg-ink       { color: var(--ssus-ink); }
+.fg-muted     { color: var(--ssus-secondary); }
 .fg-signal    { color: var(--ssus-signal); }
-.fg-s1 { color: var(--ssus-series-1); }
-.fg-s2 { color: var(--ssus-series-2); }
-.fg-s3 { color: var(--ssus-series-3); }
-.fg-s4 { color: var(--ssus-series-4); }
-.fg-s5 { color: var(--ssus-series-5); }
-.fg-s6 { color: var(--ssus-series-6); }
-.bg-blueprint { background-color: $ssus-blueprint; }
-.bg-ink       { background-color: $ssus-survey-ink; }
-.bg-signal    { background-color: var(--ssus-signal); }
-.bg-s1 { background-color: var(--ssus-series-1); }
-.bg-s2 { background-color: var(--ssus-series-2); }
-.bg-s3 { background-color: var(--ssus-series-3); }
-.bg-s4 { background-color: var(--ssus-series-4); }
-.bg-s5 { background-color: var(--ssus-series-5); }
-.bg-s6 { background-color: var(--ssus-series-6); }
-/* bullet tints cycle the series palette — opt-in, never the default; the
-   class may ride the list itself or a div wrapping it */
-.ssus-series-tints li:nth-child(6n+1)::marker { color: var(--ssus-series-1); }
-.ssus-series-tints li:nth-child(6n+2)::marker { color: var(--ssus-series-2); }
-.ssus-series-tints li:nth-child(6n+3)::marker { color: var(--ssus-series-3); }
-.ssus-series-tints li:nth-child(6n+4)::marker { color: var(--ssus-series-4); }
-.ssus-series-tints li:nth-child(6n+5)::marker { color: var(--ssus-series-5); }
-.ssus-series-tints li:nth-child(6n+6)::marker { color: var(--ssus-series-6); }
-
-/* Callouts — the note type recolors wholesale via $callout-color-note;
-   here just the tint and the title voice. The icon ships as a per-type SVG
-   asset with its stock color baked in, so it is hidden rather than forked
-   per ground — the callout's border and tint carry the distinction. */
-.reveal .callout {
-  background-color: var(--ssus-code-bg);
+@for $i from 1 through 6 {
+  .fg-s#{$i} { color: var(--ssus-series-#{$i}); }
+  .bg-s#{$i} { background-color: var(--ssus-series-#{$i}); }
 }
-.reveal .callout .callout-icon,
-.reveal .callout .callout-icon-container {
-  display: none;
-}
-.reveal .callout .callout-title {
-  color: var(--ssus-ink);
-}
-
-/* Blockquote — quiet: graticule left rule, secondary voice. */
-.reveal blockquote {
-  border-left: 2px solid var(--ssus-rule);
-  color: var(--ssus-secondary);
-  font-style: italic;
-  box-shadow: none;
+/* bullets that key a figure's series, in order; never the default */
+@for $i from 1 through 6 {
+  .reveal .ssus-series-tints li:nth-child(6n + #{$i})::marker {
+    color: var(--ssus-series-#{$i});
+  }
 }

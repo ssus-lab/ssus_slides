@@ -1,144 +1,174 @@
 ---
 title: "The structure of cities, measured"
-subtitle: "Working-paper slide deck for the SSUS format"
+subtitle: "A demonstration deck for the SSUS slide format"
 author: "Elijah Knaap"
-institute: "Spatial Science and Urban Systems · UC Irvine"
+institute: "Department of Urban Planning and Public Policy · UC Irvine"
 date: today
 ssus-series: "SSUS working paper series"
 format: ssus-slides-revealjs
 bibliography: refs.bib
 ---
 
-## About this deck
+```{python}
+#| include: false
+# Slide figures: the format's figure style and its vendored Libre Franklin.
+from pathlib import Path
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
 
-This deck exercises every surface of the `ssus-slides` format: the blueprint
-hero you just saw, the heading hierarchy, list treatments, a figure in the
-lab's series palette, booktabs tables, math in MathJax, columns, a callout,
-and a citation.
+ext = next(p / "_extensions/ssus-slides" for p in [Path.cwd(), *Path.cwd().parents]
+           if (p / "_extensions/ssus-slides").is_dir())
+for f in ext.glob("fonts/LibreFranklin-*.ttf"):
+    font_manager.fontManager.addfont(f)
+plt.style.use(ext / "ssus-slides.mplstyle")
+```
 
-The grammar follows the brand identity sheets: a mono eyebrow carries the
-series line, the title is set heavy in Libre Franklin, and detail lines stay
-muted. Chrome is four corners only.
+## This deck
 
-## Type hierarchy {#type}
+Every surface of the format, in the order a talk would use them:
+
+1. The title slide you just saw, on the blueprint ground.
+2. Parts, each opened by a section slide and named in the running head.
+3. Text, lists, links, quotation, and math.
+4. A figure, a table, a callout, and code.
+5. A statement slide, a citation, and the references.
+
+# The question
+
+Why a segregation index is a function of scale.
+
+## Segregation depends on scale
+
+A segregation index summarizes how unevenly groups are spread across a
+region's neighborhoods. Its value depends on what counts as a neighborhood:
+
+- Small units see the block-to-block contrasts.
+- Large units average them away.
+    - A tract is a few thousand people.
+    - A county is a few hundred thousand.
+- The interesting quantity is the rate at which the index falls.
+
+## One claim per slide {.ssus-blueprint}
+
+::: {.ssus-lede}
+A segregation index is a curve, not a number.
+:::
+
+The multiscalar profile recomputes the index as the neighborhood around each
+location widens.
+
+# The measure
+
+## Type hierarchy
 
 ### A level-three heading
 
-Body text set at the deck root — 34 px so dense slides stay legible from the
-back row. **Bold** and *italic* carry inline emphasis; a
-[link](https://spatialscience.org) goes ink-blue with a graticule underline.
+Body text is set at the deck root, 34 px on a 1280 px canvas. **Bold** and
+*italic* carry inline emphasis; a [link](https://spatialscience.org) is
+blueprint on a graticule trace, and `inline code` sits on a tint.
 
-#### A level-four annotation label
+#### A level-four label
 
-For asides and block labels — the masthead's mono grammar, not an italic
-accent.
+> A quotation is quiet: one rule and the secondary voice.
 
-> A quotation, quiet: graticule rule, secondary voice.
+## The profile, formally
 
-## Lists
+The spatial information theory index at distance $d$ compares the entropy of
+each local environment with the region's:
 
-Default bullets:
+$$\tilde{H}(d) = 1 - \frac{\sum_i t_i \, E_i(d)}{T \, E}$$
 
-- One mechanism, measured.
-- A second, tested against a null.
-- A third, reported with its own uncertainty.
+A permutation test builds the null distribution of a difference
+$\hat{D}^{*}_b$ between two profiles, and the $p$-value estimates
 
-## Lists — the series palette
+$$p = \frac{1}{B} \sum_{b=1}^{B} \mathbb{1}\!\left( \lvert \hat{D}^{*}_b \rvert \geq \lvert \hat{D} \rvert \right)$$
 
-Bullets cycling the series palette (`.ssus-series-tints`):
+## Two columns
 
-::: {.ssus-series-tints}
-- Series blue
-- Signal orange
-- Teal
-- Gold
-- Plum
-- Green
+::: {.columns}
+::: {.column width="54%"}
+**The argument.** Zoning is a municipal instrument, so its effect runs through
+competition among jurisdictions inside a metropolitan region.
+
+**The comparison.** Partition each region into principal city and suburbs,
+and test within each.
+:::
+::: {.column width="42%"}
+| Region  | Population | In principal city |
+|---------|-----------:|------------------:|
+| Dallas  | 7,543,340  | 24%               |
+| Houston | 7,048,954  | 68%               |
+:::
 :::
 
-An <span class="alert">alert</span> span flags a unit worth your eye.
+# The evidence
 
-## A figure in the series palette
+## A figure in the slide style
 
 ```{python}
 #| echo: false
-import matplotlib.pyplot as plt
+#| fig-alt: "Four lines, one per metropolitan region, each showing the segregation index falling as the neighborhood radius grows from 0.5 to 8 kilometers; the falls differ in steepness."
 import numpy as np
 
-plt.rcParams.update({
-    "font.family": "serif",
-    "figure.dpi": 150,
-    "figure.facecolor": "#F8F9F7",   # plan-white: the figure rides the page
-    "axes.facecolor": "#F8F9F7",
-})
-SERIES = ["#0467A8", "#E0691E", "#14938D", "#AC8205", "#914A8C", "#58994A"]
-x = np.linspace(0, 10, 200)
-fig, ax = plt.subplots(figsize=(7.6, 2.2))
-for i, c in enumerate(SERIES):
-    ax.plot(x, (x * (i + 1) ** 0.5) % 8 + i * 0.4, color=c, lw=2, label=f"series {i + 1}")
-ax.set_xlabel("x")
-ax.set_ylabel("f(x)")
-ax.legend(frameon=False, ncols=2, fontsize=8)
+d = np.linspace(0.5, 8, 120)
+regions = {"Chicago": (0.36, 3.0, 0.175), "Houston": (0.32, 1.2, 0.033),
+           "Atlanta": (0.30, 2.0, 0.13), "Phoenix": (0.20, 4.0, 0.06)}
+fig, ax = plt.subplots()
+for name, (a, b, c) in regions.items():
+    h = a * np.exp(-d / b) + c
+    line, = ax.plot(d, h)
+    ax.annotate(name, (d[-1], h[-1]), xytext=(8, 0), textcoords="offset points",
+                va="center", color=line.get_color(), fontweight=600)
+ax.set_xlabel("Neighborhood radius (km)")
+ax.set_ylabel(r"$\tilde{H}(d)$")
+ax.set_xlim(0, 9.4)
+ax.set_ylim(0, 0.5)
 plt.show()
 ```
 
-The six lab series, as matplotlib draws them. Data colors only — the palette
-is validated for colorblind and contrast-safe use, and Signal (series 2)
-stays out of the mark and the chrome.
+The curves fall with distance, and the shape of the fall differs from one
+region to the next.
 
-## A booktabs table {#tbl-city}
+## A booktabs table
 
-| Region | Population | Share in principal city |
-|--------|-----------:|------------------------:|
-| Dallas | 7,543,340 | 24% |
-| Houston | 7,048,954 | 68% |
+| Region  | $\tilde{H}$, 1 km | $\tilde{H}$, 4 km | Ratio |
+|---------|------------------:|------------------:|------:|
+| Chicago | 0.320 | 0.226 | 0.71 |
+| Houston | 0.206 | 0.098 | 0.48 |
+| Atlanta | 0.318 | 0.236 | 0.74 |
+| Phoenix | 0.188 | 0.088 | 0.47 |
 
-: Two metropolises, same macro forces, different land-use regimes
+: Index at two radii, and the share that survives the wider neighborhood
 
-Weightless cells; the header and last row carry the ink rules.
-
-## Math
-
-Comparative spatial inference permutes the assignment vector to build a null
-distribution of the difference $\hat{D}^{*}_b$. The permutation $p$-value
-estimates
-
-$$p = \frac{1}{B}\,\sum_{b=1}^{B} \mathbb{1}\!\left( \lvert \hat{D}^{*}_b \rvert \geq \lvert \hat{D} \rvert \right)$$
-
-Inline, $\tilde{H}$ decomposes additively across the city–suburb partition.
-
-## Columns
-
-::: {.columns}
-::: {.column width="58%"}
-**The argument.** Zoning is a municipal instrument: its effect operates
-through competition among *intra*-metropolitan jurisdictions, the sorting the
-Tiebout mechanism describes.
-:::
-::: {.column width="40%"}
-**The comparison.** Re-partition each region into principal city versus
-suburbs, and test *within* each.
-:::
-:::
+Weightless cells; the header and the last row carry the rules.
 
 ## Callouts and code
 
 ::: {.callout-note}
+## Computing a profile
 
-## A note callout
-
-Callouts get a graticule rule and an ink title; code sets in IBM Plex Mono.
+The segregation package computes the whole curve in one call.
 
 ```python
-from neighbayes import NeighBayes  # the lab's own packages carry the work
+from segregation.dynamics import compute_multiscalar_profile
+from segregation.multigroup import MultiInfoTheory
+
+profile = compute_multiscalar_profile(
+    gdf, segregation_index=MultiInfoTheory,
+    groups=["white", "black", "hispanic", "asian"], distances=[500, 1000, 4000])
 ```
 :::
 
-## One citation
+```python
+# outside a callout, code sits on its own tint
+for d, h in profile.items():
+    print(f"{d:>5} m  {h:.3f}")
+```
+
+## A citation
 
 The segregation package ships comparative inference for Python
-[@cortes2026segregation]. [@cortes2026segregation] also anchors a references
-slide when cited.
+[@cortes2026segregation]. A cited work lands on the references slide.
 
 ## References
 

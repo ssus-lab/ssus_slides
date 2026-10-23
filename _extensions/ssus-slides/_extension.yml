@@ -1,35 +1,23 @@
 title: SSUS slides
 author: Eli Knaap
-version: 0.1.0
+version: 0.2.0
 quarto-required: ">=1.4.11"
 
-# SSUS revealjs format — the lab's slide identity, loosely based on
-# grantmcdermott/quarto-revealjs-clean (MIT): minimal format config, one
-# scss theme layered on `default`, low heading hierarchy, booktabs tables,
-# muted corner chrome, and mathjax-config.js copied verbatim from clean.
+# The SSUS revealjs format: one SCSS theme layered on `default`, after
+# grantmcdermott/quarto-revealjs-clean (MIT), with the identity entirely
+# SSUS. Tokens are hardcoded in ssus-slides.scss, each with its source in
+# ssus-lab-brand, because revealjs does not consume _brand.yml the way html
+# does.
 #
-# The identity layer is entirely SSUS, hardcoded (revealjs does not consume
-# _brand.yml the way html does — the same call the course template's
-# reveal-custom.scss made): palette and type from ssus-lab-brand
-# (`quarto/_brand.yml`, `_brand-dark.yml`, `matplotlib/ssus_style.py`), the
-# slide grammar from the brand sheets (`sheets/ssus-identity-mocks.html`,
-# Surface 04 course title slide, Surface 05 blueprint hero + 30px graticule
-# grid). Fonts are OFL and vendored (Libre Franklin set copied from the
-# ssus-masthead extension; IBM Plex Mono downloaded from google/fonts) — no
-# Google Fonts @import, which fails offline. Lockups vendored from
-# ssus-lab-brand/quarto and embedded as data-URIs in title-slide.html
-# (regenerate with `base64 -i assets/ssus-stacked-*.svg | tr -d '\n'`).
+# ssus.lua paints the blueprint grounds (title slide, `#` section slides,
+# `.ssus-blueprint` slides) through reveal's background layer, numbers the
+# parts, writes the running heads, and switches dark decks on
+# `ssus-dark: true`.
 #
-# Opt-in dark decks ride `ssus-dark: true` — the ssus.lua filter adds an
-# `html.ssus-dark` class that flips CSS custom properties. There is no
-# prefers-color-scheme anywhere: decks are shared-room artifacts and must
-# not flip mid-presentation.
-#
-# Install by vendoring: copy this whole `_extensions/ssus-slides/` folder
-# into the project and re-copy it IN FULL whenever the source changes — a
-# partial re-sync once left a stale vendor elsewhere in the house and quarto
-# silently fell back to plain html. (`quarto add` stalls when the GitHub
-# fetch hangs, so it is not the documented install here.)
+# Install by vendoring: copy this whole folder into the project and re-copy
+# it in full whenever the source changes. A partial re-sync once left a
+# stale vendor elsewhere in the house and Quarto fell back to plain html
+# without a word. (`quarto add` stalls when its GitHub fetch hangs.)
 
 contributes:
   formats:
@@ -37,15 +25,21 @@ contributes:
       theme: [default, ssus-slides.scss]
       filters: [ssus.lua]
       template-partials: [title-slide.html]
-      logo: ssus-horizontal-light.svg
+      # the mark alone: the horizontal lockup stops reading below 240 px
+      logo: ssus-mark-light.svg
+      # the deck box is the 1280×720 canvas exactly; slides pad themselves
       width: 1280
       height: 720
       margin: 0.0
+      center: false
       menu:
         side: left
-      slide-number: true
+      slide-number: c/t
       progress: false
+      code-line-numbers: false
       date-format: long
+      fig-width: 11.2
+      fig-height: 3.8
       html-math-method:
         method: mathjax
         url: https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js
@@ -78,10 +72,6 @@ contributes:
             <script src="mathjax-config.js"></script>
       format-resources:
         - mathjax-config.js
-        - ssus-mark-light.svg
-        - ssus-mark-night.svg
-        - ssus-horizontal-light.svg
-        - ssus-horizontal-night.svg
         - fonts/LibreFranklin-Regular.ttf
         - fonts/LibreFranklin-Italic.ttf
         - fonts/LibreFranklin-SemiBold.ttf

@@ -1,0 +1,62 @@
+# SSUS slide figures, dark decks (ssus-dark: true). The brand's ssus-dark.mplstyle
+# (ssus-lab-brand/matplotlib) at slide scale: type sized for a 1280 px canvas
+# and a transparent figure, so the plot rides the deck's ground instead of
+# printing a white rectangle on it. The setup chunk in template.qmd finds
+# this file in _extensions/ssus-slides/ and registers the vendored fonts.
+
+font.family: Libre Franklin, Helvetica Neue, Arial, sans-serif
+font.size: 14
+axes.titlesize: 15
+axes.titleweight: 600
+axes.titlelocation: left
+axes.titlepad: 10
+axes.labelsize: 14
+axes.labelpad: 6
+xtick.labelsize: 12
+ytick.labelsize: 12
+legend.fontsize: 12
+figure.titlesize: 16
+figure.titleweight: 800
+
+# Text wears ink; marks carry identity.
+text.color: E6EBEA
+axes.labelcolor: E6EBEA
+axes.titlecolor: E6EBEA
+xtick.color: 8FA1AB
+ytick.color: 8FA1AB
+xtick.labelcolor: 8FA1AB
+ytick.labelcolor: 8FA1AB
+
+figure.facecolor: none
+axes.facecolor: none
+savefig.facecolor: none
+savefig.transparent: True
+axes.edgecolor: 5C6B74
+axes.linewidth: 0.8
+axes.spines.top: False
+axes.spines.right: False
+axes.axisbelow: True
+axes.grid: True
+axes.grid.axis: y
+grid.color: 25313B
+grid.linewidth: 0.7
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+xtick.major.size: 4
+ytick.major.size: 0
+
+axes.prop_cycle: cycler('color', ['2A76C3', 'DE6E2C', '29A895', 'B68B16', 'AB61A5', '5B9C4D'])
+lines.linewidth: 2.4
+lines.markersize: 7
+lines.solid_capstyle: round
+patch.linewidth: 0
+scatter.edgecolors: face
+
+legend.frameon: False
+legend.borderaxespad: 0.3
+legend.handlelength: 1.6
+
+figure.figsize: 11.2, 3.8
+figure.constrained_layout.use: True
+savefig.bbox: tight
+savefig.pad_inches: 0.06

@@ -1,16 +1,38 @@
 ---
-# SSUS slides — bare starter. Copy this file to begin a deck.
-# Full option reference: README.md. Exercising decks: demo/index.qmd,
-# demo/dark.qmd (ssus-dark: true), demo/course.qmd (course eyebrow).
+# SSUS slides: bare starter. Copy this file to begin a deck.
+# Options: README.md. Exercising decks: demo/index.qmd, demo/dark.qmd
+# (ssus-dark: true), demo/course.qmd (course eyebrow and footer).
 title: "Slide title"
 subtitle: "Subtitle, or delete this line"
 author: "Your Name"
-institute: "Spatial Science and Urban Systems · UC Irvine"
+institute: "Department of Urban Planning and Public Policy · UC Irvine"
 date: today
 ssus-series: "SSUS working paper series"
 format: ssus-slides-revealjs
 ---
 
-## First slide
+```{python}
+#| include: false
+# Slide figures: the format's figure style and its vendored Libre Franklin.
+# Delete this chunk in a deck with no executed figures. A dark deck uses
+# ssus-slides-dark.mplstyle.
+from pathlib import Path
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+ext = next(p / "_extensions/ssus-slides" for p in [Path.cwd(), *Path.cwd().parents]
+           if (p / "_extensions/ssus-slides").is_dir())
+for f in ext.glob("fonts/LibreFranklin-*.ttf"):
+    font_manager.fontManager.addfont(f)
+plt.style.use(ext / "ssus-slides.mplstyle")
+```
+
+## Opening slide
 
 - One point.
+
+# A part
+
+## First slide of the part
+
+- The running head above names the part.
