@@ -7,7 +7,8 @@ Chrome via channel="chrome", with no browser download.
 
 Each slide is shot at the 1280×720 canvas. The title slide and the first
 section slide are shot again in a 1440×900 window, where a ground painted on
-the section instead of reveal's background layer shows as letterbox bars.
+the section instead of reveal's background layer shows as letterbox bars,
+and the overview (Esc) is shot from mid-deck.
 
 It also measures: any slide whose content runs past the safe box (the
 canvas minus the 64 px footer band) is reported, because the canvas clips
@@ -76,6 +77,22 @@ def shoot_wide(browser, deck: Path) -> None:
     page.close()
 
 
+def shoot_overview(browser, deck: Path) -> None:
+    """Overview (Esc) from mid-deck: reveal re-lays every section there, and
+    a clip or a section pseudo-element that works in presentation can hide
+    the thumbnails."""
+    page = browser.new_page(viewport={"width": 1280, "height": 720})
+    page.goto(f"file://{deck.resolve()}")
+    page.wait_for_timeout(1500)
+    page.evaluate("Reveal.configure({ transition: 'none' })")
+    mid = page.evaluate("Math.floor(Reveal.getTotalSlides() / 2)")
+    page.evaluate(f"Reveal.slide(...Object.values(Reveal.getIndices(Reveal.getSlides()[{mid}])))")
+    page.evaluate("Reveal.toggleOverview(true)")
+    page.wait_for_timeout(1000)
+    page.screenshot(path=str(OUT / f"{deck.stem}-overview.png"))
+    page.close()
+
+
 def main() -> None:
     decks = [Path(p) for p in sys.argv[1:]]
     if not decks:
@@ -88,6 +105,7 @@ def main() -> None:
         for deck in decks:
             problems += shoot(page, deck)
             shoot_wide(browser, deck)
+            shoot_overview(browser, deck)
         browser.close()
     for p in problems:
         print("OVERFLOW", p)

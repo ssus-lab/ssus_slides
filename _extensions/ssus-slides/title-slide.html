@@ -4,7 +4,11 @@
 
   The hero: the series eyebrow, the title, and the subtitle hold the middle
   of the slide; a hairline foot carries the byline on the left and the
-  horizontal lockup on the right. The blueprint ground and grid come from
+  horizontal lockup on the right. The byline reads Quarto's normalized
+  by-author, so each author is a name with its affiliations beneath, side by
+  side and wrapping; the date sits under them. Quarto folds `institute` into
+  the affiliations itself, the i-th institute to the i-th author, so the
+  partial never prints it a second time. The blueprint ground and grid come from
   ssus.lua through title-slide-attributes (reveal's background layer), and so
   does ssus-lockup-src, a data URI of assets/ssus-horizontal-dark.svg read at
   render time.
@@ -24,18 +28,24 @@ $endif$
   </div>
   <div class="ssus-hero-foot">
     <div class="ssus-byline">
-$if(author)$
+$if(by-author)$
       <div class="ssus-authors">
-$for(author)$
-        <p class="author">$author$</p>
+$for(by-author)$
+        <div class="ssus-author">
+          <p class="author">$by-author.name.literal$</p>
+$if(by-author.affiliations)$
+          <p class="affiliation">$for(by-author.affiliations)$$it.name$$sep$; $endfor$</p>
+$endif$
+        </div>
 $endfor$
       </div>
-$endif$
+$else$
 $for(institute)$
-      <p class="institute">$institute$</p>
+      <p class="ssus-meta">$institute$</p>
 $endfor$
+$endif$
 $if(date)$
-      <p class="date">$date$</p>
+      <p class="ssus-meta">$date$</p>
 $endif$
     </div>
 $if(ssus-lockup)$

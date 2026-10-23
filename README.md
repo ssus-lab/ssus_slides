@@ -21,8 +21,8 @@ exercise every surface:
 
 Render each deck (`quarto render demo/index.qmd`; `quarto render` alone does
 all four) and check them with `python3 tools/shoot.py demo/*.html`. It
-screenshots every slide into `qa/`, shoots the title and first section
-slide again in a 16:10 window, and exits 1 if any slide's content runs into
+screenshots every slide into `qa/`, shoots the title and first section slide
+again in a 16:10 window and the overview from mid-deck, and exits 1 if any slide's content runs into
 the footer band.
 
 ## The grammar
@@ -31,7 +31,12 @@ the footer band.
   eyebrow, the title, and the subtitle hold the middle; a hairline foot
   carries the byline on the left and the horizontal lockup on the right.
   The subtitle is an italic accent, the authors are the strongest detail
-  line, and the institute and date demote by italic and tone.
+  line, and affiliations and the date demote by italic and tone.
+- **Authors.** Each author is a name with its affiliations beneath; authors
+  sit side by side and wrap, so four take one row and eight take two. Give
+  each author its own `affiliations:`. Quarto folds `institute:` into the
+  affiliations by position (the first institute to the first author), so a
+  single `institute:` suits a single author.
 - **Parts.** `# Name` opens a part on a blueprint section slide with a sheet
   number (`01`). Every slide after it names the part in a mono running head
   above its title. `# Appendix {.unnumbered}` keeps the slide and the
@@ -121,7 +126,11 @@ vendor there needs reinstall discipline.
 - `ssus.lua` writes `data-background-color` and `-gradient` on the title
   slide (through `title-slide-attributes`), on `#` sections, and on
   `.ssus-blueprint` slides; numbers the parts; writes the running heads; and
-  switches dark decks. It inlines the hero lockup and the night mark as data
+  switches dark decks. The part number and running head travel as custom
+  properties (`--ssus-part`, `--ssus-section`) that the heading's `::before`
+  draws, because reveal's overview hides a section's own pseudo-elements.
+  Section slides set their title at a fixed height, not by reveal's
+  centring, which overview and PDF export each redo. It inlines the hero lockup and the night mark as data
   URIs read from the extension folder at render time, so a deck copied away
   from `_extensions/` keeps them.
 - `title-slide.html` is the hero partial.

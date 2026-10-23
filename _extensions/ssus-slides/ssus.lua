@@ -9,8 +9,8 @@
 --    retunes the theme's custom properties for those slides. A header that
 --    sets its own background-color or background-image keeps it.
 -- 2. Parts and running heads. Each numbered `# Section` gets a sheet number
---    (data-ssus-part, "01"); each slide after it carries the part in its top
---    band (data-ssus-section, "01 · Name"). `{.unnumbered}` sections keep
+--    (--ssus-part, "01"); each slide after it carries the part in its top
+--    band (--ssus-section, "01 · Name"). `{.unnumbered}` sections keep
 --    the ground and the running head but take no number.
 --    `ssus-running-head: false` turns both off.
 -- 3. Dark decks. `ssus-dark: true` adds html.ssus-dark in a synchronous head
@@ -105,6 +105,20 @@ local function Meta(meta)
   return meta
 end
 
+-- The part number and the running head travel as CSS custom properties on
+-- the section, read by the heading's ::before. Reveal's overview hides every
+-- section's own ::before and ::after (display: none !important), so the
+-- heading, not the section, has to draw them.
+local function css_string(text)
+  return '"' .. text:gsub("\\", "\\\\"):gsub('"', '\\"') .. '"'
+end
+
+local function add_style(header, property, value)
+  local style = header.attributes["style"]
+  local decl = property .. ": " .. css_string(value)
+  header.attributes["style"] = style and (style .. "; " .. decl) or decl
+end
+
 local function Pandoc(doc)
   local part, section = 0, nil
   for _, block in ipairs(doc.blocks) do
@@ -116,14 +130,12 @@ local function Pandoc(doc)
       else
         part = part + 1
         local number = string.format("%02d", part)
-        if running_head then block.attributes["data-ssus-part"] = number end
+        if running_head then add_style(block, "--ssus-part", number) end
         section = number .. " · " .. name
       end
     elseif block.t == "Header" and block.level == 2 then
       if block.classes:includes("ssus-blueprint") then paint_blueprint(block) end
-      if running_head and section and not block.attributes["data-ssus-section"] then
-        block.attributes["data-ssus-section"] = section
-      end
+      if running_head and section then add_style(block, "--ssus-section", section) end
     end
   end
   return doc

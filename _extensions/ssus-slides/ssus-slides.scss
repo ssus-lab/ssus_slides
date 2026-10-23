@@ -145,8 +145,10 @@ html.ssus-dark {
 
 /* The deck box is the 1280×720 canvas (_extension.yml sets width, height,
    margin 0), so px below are canvas units and scale with the deck. Clip
-   the stack at the box so a neighbor never shows through. */
-.reveal .slides {
+   the stack at the box so a neighbor never shows through. Not in overview:
+   there reveal lays the thumbnails out beyond the box, and the clip hid
+   every one but the slide at the center. */
+.reveal:not(.overview) .slides {
   overflow: hidden;
 }
 
@@ -165,7 +167,7 @@ html.reveal-print .reveal .slides section.slide {
   padding: 72px 76px 64px !important;
 }
 html.reveal-print .reveal .slides section.slide.level1 {
-  padding: 0 76px !important;
+  padding: 248px 76px 0 !important;
 }
 html.reveal-print .reveal .slides section#title-slide {
   top: 0 !important;
@@ -230,15 +232,21 @@ html.reveal-print .reveal .slides section#title-slide {
   margin: 1.4em 0 0.5em;
 }
 
-/* The running head: the current section, set like the site's eyebrow, in
-   the top band of every content slide (ssus.lua writes data-ssus-section). */
-.reveal .slides section.slide[data-ssus-section]::before {
-  content: attr(data-ssus-section);
+/* The running head: the current part, set like the site's eyebrow, in the
+   top band of every content slide. ssus.lua writes it to --ssus-section on
+   the section; the title draws it, because reveal's overview hides a
+   section's own ::before. The title is static, so the head positions
+   against the section. */
+.reveal .slides section.slide > h2::before {
+  content: var(--ssus-section, none);
   position: absolute;
   top: 34px;
   left: 76px;
+  white-space: nowrap;
   font-family: $font-family-monospace;
   font-size: 15px;
+  font-weight: 400;
+  line-height: 1.2;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ssus-secondary);
@@ -356,9 +364,9 @@ html.reveal-print .reveal .slides section#title-slide {
   line-height: 1.06;
   letter-spacing: -0.02em;
   color: $ssus-plan-white;
-  max-width: 20ch;
+  max-width: 22ch;
   margin: 0;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 /* The detail lines carry clean's hierarchy (Eli, 2026-10-21): the subtitle
    is an italic accent; the authors are the strongest detail line, upright
@@ -379,26 +387,39 @@ html.reveal-print .reveal .slides section#title-slide {
   justify-content: space-between;
   gap: 40px;
   border-top: 1px solid $ssus-hairline-blueprint;
-  padding-top: 22px;
+  padding-top: 20px;
 }
+/* Each author is a unit, a name over its affiliations; units sit side by
+   side and wrap, so four authors take one row and eight take two. */
 #title-slide .ssus-authors {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 1.3em;
-  margin-bottom: 0.25em;
+  gap: 12px 36px;
+  margin-bottom: 12px;
+}
+#title-slide .ssus-author {
+  max-width: 420px;
+}
+#title-slide .ssus-author:only-child {
+  max-width: none;
 }
 #title-slide .author {
-  font-size: 0.74em;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 1.25;
   color: $ssus-plan-white;
   margin: 0;
 }
-#title-slide .institute,
-#title-slide .date {
-  font-size: 0.64em;
+#title-slide .affiliation,
+#title-slide .ssus-meta {
+  font-size: 16px;
   font-style: italic;
+  line-height: 1.35;
   color: $ssus-sky;
-  margin: 0.15em 0 0;
+  margin: 3px 0 0;
+}
+#title-slide .ssus-authors + .ssus-meta {
+  margin-top: 0;
 }
 #title-slide a {
   color: inherit;
@@ -408,28 +429,33 @@ html.reveal-print .reveal .slides section#title-slide {
    carries its own clear space, so nothing pads it. */
 #title-slide .ssus-lockup {
   flex: none;
-  width: 264px;
+  width: 248px;
   height: auto;
   margin: 0 -10px -8px 0;   /* hang the clear space past the text edge */
 }
 
 /* ── Section slides ──────────────────────────────────────────────────── */
 
-/* `# Section` opens a part: blueprint ground, a sheet number, the name.
-   Reveal centres these vertically (quarto gives them .center). */
+/* `# Section` opens a part: blueprint ground, a sheet number, the name, at
+   the same height on every part slide. A fixed position rather than
+   reveal's centring, because overview and PDF export each re-lay sections
+   at full height from the top, which threw a centred title to the top edge;
+   at full height reveal's own centring computes to 0 and stays out. */
 .reveal .slides section.slide.level1 {
-  padding-top: 0;
-  padding-bottom: 0;
+  height: 100%;
+  padding: 248px 76px 0;
 }
-.reveal .slides section.slide.level1[data-ssus-part]::before {
-  content: attr(data-ssus-part);
+.reveal .slides section.slide.level1 > h1::before {
+  content: var(--ssus-part, none);
   display: block;
+  width: 96px;
   font-family: $font-family-monospace;
   font-size: 18px;
+  font-weight: 400;
+  line-height: 1.2;
   letter-spacing: 0.14em;
   color: var(--ssus-secondary);
   border-top: 1px solid var(--ssus-rule);
-  width: 96px;
   padding-top: 16px;
   margin-bottom: 26px;
 }
