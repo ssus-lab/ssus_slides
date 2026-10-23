@@ -16,3 +16,8 @@ resources/
 /LibreFranklin-*.ttf
 /ssus-mark-*.svg
 /mathjax-config.js
+# the same format-resources copies land next to each demo deck
+/demo/*.ttf
+/demo/*.svg
+/demo/mathjax-config.js
+/ssus-*.svg
