@@ -109,13 +109,20 @@ such as a paper's, goes on a plate: `![](fig.png){.ssus-plate}`.
 
 ## Installing into another project
 
-Vendoring is the only supported install: copy the whole
-`_extensions/ssus-slides/` folder into the project, and re-copy it in full
-whenever the source changes. A partial re-sync once left a stale vendor
-elsewhere in the house, and Quarto fell back to plain html without a word.
-`quarto add` is not the documented path, because it stalls when its GitHub
-fetch hangs. The sibling course template gitignores `_extensions/`, so a
-vendor there needs reinstall discipline.
+Install the format as a dependency, from a release tag:
+
+```sh
+quarto add ssus-lab/ssus_slides@v0.2.1
+```
+
+It lands at `_extensions/ssus-lab/ssus-slides/`. Never copy the folder in by
+hand: a hand copy, partially re-synced, once left a stale format elsewhere in
+the house, and Quarto fell back to plain html without a word.
+
+The ref after `@` must be a tag or a branch; a commit sha does not resolve.
+An install gets only what is pushed. Quarto records no source and keeps no
+manifest, so the project states which tag it uses. The sibling course
+template gitignores `_extensions/`, which suits an install it repeats.
 
 ## How it is built
 

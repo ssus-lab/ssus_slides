@@ -1,6 +1,6 @@
 title: SSUS slides
 author: Eli Knaap
-version: 0.2.0
+version: 0.2.1
 quarto-required: ">=1.4.11"
 
 # The SSUS revealjs format: one SCSS theme layered on `default`, after
@@ -14,10 +14,11 @@ quarto-required: ">=1.4.11"
 # parts, writes the running heads, and switches dark decks on
 # `ssus-dark: true`.
 #
-# Install by vendoring: copy this whole folder into the project and re-copy
-# it in full whenever the source changes. A partial re-sync once left a
-# stale vendor elsewhere in the house and Quarto fell back to plain html
-# without a word. (`quarto add` stalls when its GitHub fetch hangs.)
+# Install as a dependency, never by copying this folder in:
+# `quarto add ssus-lab/ssus_slides@<tag>` lands it at
+# _extensions/ssus-lab/ssus-slides/. A hand copy, partially re-synced, once
+# left a stale format elsewhere in the house, and Quarto fell back to plain
+# html without a word.
 
 contributes:
   formats:
