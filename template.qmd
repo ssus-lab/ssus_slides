@@ -1,5 +1,6 @@
 ---
-# SSUS slides: bare starter. Copy this file to begin a deck.
+# SSUS slides: bare starter. `quarto use template ssus-lab/ssus_slides@<tag>`
+# copies it into an empty folder, renamed after the folder (slides.qmd).
 # Options: README.md. Exercising decks: demo/index.qmd, demo/dark.qmd
 # (ssus-dark: true), demo/course.qmd (course eyebrow and footer).
 title: "Slide title"
@@ -20,8 +21,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-ext = next(p / "_extensions/ssus-slides" for p in [Path.cwd(), *Path.cwd().parents]
-           if (p / "_extensions/ssus-slides").is_dir())
+# installed: _extensions/ssus-lab/ssus-slides/; in the format's own repo:
+# _extensions/ssus-slides/
+ext = next(d for p in [Path.cwd(), *Path.cwd().parents]
+           for d in (p / "_extensions/ssus-lab/ssus-slides", p / "_extensions/ssus-slides")
+           if d.is_dir())
 for f in ext.glob("fonts/LibreFranklin-*.ttf"):
     font_manager.fontManager.addfont(f)
 plt.style.use(ext / "ssus-slides.mplstyle")

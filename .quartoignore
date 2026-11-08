@@ -1,0 +1,7 @@
+# What `quarto use template ssus-lab/ssus_slides@<tag>` leaves out: the
+# format's own demo decks and QA tools. Quarto already skips dotfiles,
+# README.md, and _extensions/ (installed separately). Patterns must be bare:
+# a rooted pattern (/demo/) matches nothing in .quartoignore (Quarto 1.11.9).
+demo/
+tools/
+qa/

@@ -1,7 +1,6 @@
+# No render list: Quarto renders every .qmd in the project and skips
+# README.md. Here that is template.qmd and the three demo decks; in a
+# project's slides/ folder, where `quarto use template` copies this file,
+# it is the deck alone (slides.qmd, renamed from template.qmd).
 project:
   type: default
-  render:
-    - template.qmd
-    - demo/index.qmd
-    - demo/dark.qmd
-    - demo/course.qmd

@@ -10,7 +10,16 @@ Write a deck like any revealjs document and set `format: ssus-slides-revealjs`.
 
 ## Start
 
-Copy [`template.qmd`](template.qmd) and edit its metadata. The demo decks
+In a project, start a deck in an empty folder:
+
+```sh
+quarto use template ssus-lab/ssus_slides@v0.2.2 --no-prompt
+```
+
+It installs the format and copies [`template.qmd`](template.qmd), renamed
+after the folder (`slides/slides.qmd`), with a `_quarto.yml` that renders
+every deck in the folder; the demo decks and the QA tools stay behind
+(`.quartoignore`). Then edit the starter's metadata. The demo decks
 exercise every surface:
 
 | Deck | Shows |
@@ -87,16 +96,19 @@ A figure should ride the ground. The extension ships `ssus-slides.mplstyle`
 and `ssus-slides-dark.mplstyle`: the brand's figure styles at slide scale,
 with a transparent figure face and constrained layout, sized by default
 (`fig-width: 11.2`, `fig-height: 3.8`) to leave room for a title and two
-lines of text. The setup chunk in `template.qmd` finds them in
-`_extensions/ssus-slides/` and registers the vendored Libre Franklin:
+lines of text. The setup chunk in `template.qmd` finds them where the format
+sits — `_extensions/ssus-lab/ssus-slides/` once installed,
+`_extensions/ssus-slides/` in this repo — and registers the vendored Libre
+Franklin:
 
 ```python
 from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-ext = next(p / "_extensions/ssus-slides" for p in [Path.cwd(), *Path.cwd().parents]
-           if (p / "_extensions/ssus-slides").is_dir())
+ext = next(d for p in [Path.cwd(), *Path.cwd().parents]
+           for d in (p / "_extensions/ssus-lab/ssus-slides", p / "_extensions/ssus-slides")
+           if d.is_dir())
 for f in ext.glob("fonts/LibreFranklin-*.ttf"):
     font_manager.fontManager.addfont(f)
 plt.style.use(ext / "ssus-slides.mplstyle")
@@ -112,7 +124,7 @@ such as a paper's, goes on a plate: `![](fig.png){.ssus-plate}`.
 Install the format as a dependency, from a release tag:
 
 ```sh
-quarto add ssus-lab/ssus_slides@v0.2.1
+quarto add ssus-lab/ssus_slides@v0.2.2
 ```
 
 It lands at `_extensions/ssus-lab/ssus-slides/`. Never copy the folder in by
