@@ -351,6 +351,17 @@ html.reveal-print .reveal .slides section#title-slide {
   font-size: 0.55em;
   color: var(--ssus-secondary);
 }
+/* Quarto pins a slide's asides, footnotes among them, at bottom: 20px, which
+   on this canvas is inside the 64 px footer band: a footnote ran under the
+   menu button and the slide number (kindex deck, 2026-11-08). Pin them to
+   the band's top edge and inset them to the slide's side margins. A scrollable
+   slide sets its asides in flow, as Quarto does. */
+.reveal .slides section.slide:not(.scrollable) > aside:not(.notes),
+.reveal .slides section.slide:not(.scrollable) > div.aside {
+  bottom: 64px;
+  left: 76px;
+  right: 76px;
+}
 .reveal .ssus-small {
   font-size: 0.75em;
 }
