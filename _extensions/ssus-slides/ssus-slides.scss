@@ -88,6 +88,7 @@ $callout-color-note: $ssus-blueprint;
   --ssus-accent: #{$ssus-blueprint};
   --ssus-link-trace: #{$ssus-graticule};
   --ssus-marker: #{$ssus-blueprint};
+  --ssus-subpoint: #{nth($ssus-series, 1)};  /* 5.7:1 on plan white */
   --ssus-signal: #{$ssus-signal};
   --ssus-tint: rgba(15, 59, 94, 0.05);      /* blueprint at 5% */
   /* code tokens: each passes 4.5:1 on its ground */
@@ -109,6 +110,7 @@ html.ssus-dark {
   --ssus-accent: #{$ssus-sky-link};
   --ssus-link-trace: #{$ssus-slate};
   --ssus-marker: #{$ssus-sky-link};
+  --ssus-subpoint: #{$ssus-sky-link};       /* 7.7:1 on night */
   --ssus-signal: #{$ssus-signal-dark};
   --ssus-tint: rgba(230, 235, 234, 0.06);   /* haze at 6% */
   --ssus-code-keyword: #{$ssus-sky-link};
@@ -130,6 +132,7 @@ html.ssus-dark {
   --ssus-accent: #{$ssus-sky};
   --ssus-link-trace: rgba(157, 187, 214, 0.5);
   --ssus-marker: #{$ssus-sky};
+  --ssus-subpoint: #{$ssus-sky};            /* 5.8:1 on blueprint */
   --ssus-tint: rgba(248, 249, 247, 0.07);
   --ssus-code-keyword: #{$ssus-sky};
   --ssus-code-string: #{$ssus-plan-white};
@@ -300,6 +303,17 @@ html.reveal-print .reveal .slides section#title-slide {
   color: var(--ssus-marker);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+/* Second-level points take the subpoint blue, text and marker, so they read as
+   detail under their parent rather than as more of the same list (Eli,
+   2026-11-08). Blueprint sits too close to the ink to tell apart, 1.38:1
+   against it where series blue is 2.67:1; the series blue is the brand's own,
+   and each ground's subpoint passes 4.5:1 there (see the tokens above). */
+.reveal li li {
+  color: var(--ssus-subpoint);
+}
+.reveal li li::marker {
+  color: var(--ssus-subpoint);
 }
 
 /* Links: accent text on a graticule trace, the masthead's link grammar */

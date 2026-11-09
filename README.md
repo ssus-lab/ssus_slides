@@ -13,7 +13,7 @@ Write a deck like any revealjs document and set `format: ssus-slides-revealjs`.
 In a project, start a deck in an empty folder:
 
 ```sh
-quarto use template ssus-lab/ssus_slides@v0.2.4 --no-prompt
+quarto use template ssus-lab/ssus_slides@v0.2.5 --no-prompt
 ```
 
 It installs the format and copies [`template.qmd`](template.qmd), renamed
@@ -124,7 +124,7 @@ such as a paper's, goes on a plate: `![](fig.png){.ssus-plate}`.
 Install the format as a dependency, from a release tag:
 
 ```sh
-quarto add ssus-lab/ssus_slides@v0.2.4
+quarto add ssus-lab/ssus_slides@v0.2.5
 ```
 
 It lands at `_extensions/ssus-lab/ssus-slides/`. Never copy the folder in by
