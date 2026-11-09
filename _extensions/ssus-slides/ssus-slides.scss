@@ -252,11 +252,16 @@ html.reveal-print .reveal .slides section#title-slide {
   color: var(--ssus-secondary);
 }
 
-/* Lists. A bullet is one point, so bullets part by more than the lines of one
-   bullet do: at 0.32em under a 1.4 line height, two-line bullets ran together
-   and a list read as a paragraph (Eli, 2026-11-08). Lines inside a bullet
-   tighten to 1.3 and bullets part by 0.7em; nested points stay close under
-   their parent. */
+/* Lists. A bullet is one point, so bullets part by clearly more than the lines
+   of one bullet do; otherwise two-line bullets run together and a list reads
+   as a paragraph (Eli, 2026-11-08). Lines inside a bullet tighten to 1.3 and
+   bullets part by 1em; nested points stay close under their parent.
+   Quarto injects an inline rule into every revealjs page,
+   `.reveal .slide ul li { margin-top: 0.4em; margin-bottom: 0.2em }`, which
+   outranks a plain `.reveal li`: v0.2.3's 0.7em never reached a slide, and
+   the gap stayed at Quarto's 0.4em. The item rules below therefore name
+   `.reveal .slides section ul > li`, one element more specific than Quarto's,
+   and zero its top margin. */
 .reveal ul,
 .reveal ol {
   margin: 0 0 0.7em 0;
@@ -270,14 +275,19 @@ html.reveal-print .reveal .slides section#title-slide {
   margin: 0.3em 0 0;
 }
 .reveal li {
-  margin: 0 0 0.7em;
   padding-left: 0.15em;
   line-height: 1.3;
 }
-.reveal li li {
-  margin-bottom: 0.25em;
+.reveal .slides section ul > li,
+.reveal .slides section ol > li {
+  margin: 0 0 1em;
 }
-.reveal li:last-child {
+.reveal .slides section li ul > li,
+.reveal .slides section li ol > li {
+  margin-bottom: 0.3em;
+}
+.reveal .slides section ul > li:last-child,
+.reveal .slides section ol > li:last-child {
   margin-bottom: 0;
 }
 .reveal li > p {
