@@ -13,7 +13,7 @@ Write a deck like any revealjs document and set `format: ssus-slides-revealjs`.
 In a project, start a deck in an empty folder:
 
 ```sh
-quarto use template ssus-lab/ssus_slides@v0.2.6 --no-prompt
+quarto use template ssus-lab/ssus_slides@v0.2.7 --no-prompt
 ```
 
 It installs the format and copies [`template.qmd`](template.qmd), renamed
@@ -58,8 +58,9 @@ the footer band.
 - **Chrome.** The mark alone bottom left, because the horizontal lockup stops
   reading below 240 px wide. The slide number bottom right, with the menu
   button beside it; that menu is Quarto's mode switcher (speaker view,
-  overview, PDF export), so it stays visible. A `footer:` line sits beside
-  the mark. On blueprint grounds the mark and footer step out and the number
+  overview, PDF export), so it stays visible. With `ssus-theme-toggle: true`
+  a round light/dark switch sits left of the menu button. A `footer:` line
+  sits beside the mark. On blueprint grounds the mark and footer step out and the number
   takes sky.
 
 Blueprint grounds are painted through reveal's background layer, so they
@@ -71,6 +72,7 @@ fill the screen at any aspect ratio and survive PDF export.
 |---|---|---|---|
 | `ssus-series` | string | absent | The title-slide eyebrow: a series ("SSUS working paper series"), a course and term ("UPPP 206 · Fall 2026"), or a venue. |
 | `ssus-dark` | boolean | `false` | The page goes to Night: haze text, sky links, the night series palette, dark code tokens, the night mark. Blueprint grounds stay blueprint, as the lab site's bands do in dark mode. There is no `prefers-color-scheme`: a deck is shown in a room, and the room chooses once. |
+| `ssus-theme-toggle` | boolean | `false` | A light/dark switch for the viewer: a button left of the menu button and the key T (listed in reveal's `?` help). The deck opens as rendered, by `ssus-dark`, never by the system setting, so a presenter's laptop cannot flip it. A viewer's choice is kept in the browser (`localStorage`, key `ssus-theme`), applied before first paint, and followed by the deck's other windows, the speaker view among them. For a published deck; see Figures. |
 | `ssus-lockup` | boolean | `true` | `false` drops the lockup from the title slide. |
 | `ssus-running-head` | boolean | `true` | `false` drops the running heads and the sheet numbers. |
 
@@ -119,12 +121,17 @@ because Quarto copies `format-resources` after it executes code: a first
 render would not find the copy. A figure made elsewhere with a white face,
 such as a paper's, goes on a plate: `![](fig.png){.ssus-plate}`.
 
+A deck with `ssus-theme-toggle` switches the page, not its figures: a
+transparent figure keeps the inks of the style it was drawn with, so the
+light style's ink vanishes on night. Put such a deck's figures on plates,
+which read the same on both grounds.
+
 ## Installing into another project
 
 Install the format as a dependency, from a release tag:
 
 ```sh
-quarto add ssus-lab/ssus_slides@v0.2.6
+quarto add ssus-lab/ssus_slides@v0.2.7
 ```
 
 It lands at `_extensions/ssus-lab/ssus-slides/`. Never copy the folder in by
@@ -148,6 +155,9 @@ template gitignores `_extensions/`, which suits an install it repeats.
   switches dark decks. The part number and running head travel as custom
   properties (`--ssus-part`, `--ssus-section`) that the heading's `::before`
   draws, because reveal's overview hides a section's own pseudo-elements.
+  With `ssus-theme-toggle` it also adds the switch: a head script applies the
+  saved choice, and a body script builds the button, binds T, swaps the
+  corner mark both ways and follows the choice made in another window.
   Section slides set their title at a fixed height, not by reveal's
   centring, which overview and PDF export each redo. It inlines the hero lockup and the night mark as data
   URIs read from the extension folder at render time, so a deck copied away

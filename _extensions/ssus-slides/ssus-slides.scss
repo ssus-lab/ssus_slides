@@ -25,7 +25,10 @@
    Every rule below reads var(--ssus-*). A ground is a set of values for
    those properties: :root (plan white), html.ssus-dark (night), and
    .ssus-ground-blueprint (blueprint). There is no prefers-color-scheme:
-   a deck is shown in a room and must not flip with a laptop setting.      */
+   a deck is shown in a room and must not flip with a laptop setting. A
+   viewer may switch it instead (`ssus-theme-toggle: true`), which toggles
+   html.ssus-dark at run time; every rule follows, because every rule reads
+   the properties.                                                          */
 
 /*-- scss:defaults --*/
 
@@ -848,6 +851,57 @@ html.reveal-print .reveal .slides section#title-slide {
   color: var(--ssus-secondary) !important;
   text-decoration: none !important;
 }
+/* Quarto draws the menu glyph as a background image with the theme's link
+   color baked in, so it stayed blueprint on night and vanished on blueprint
+   grounds, whatever the rules above set. The same glyph as a mask over
+   currentColor takes the chrome's color on every ground. */
+.reveal .slide-menu-button .fa-bars::before {
+  background-image: none !important;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+/* The viewer's light/dark switch (`ssus-theme-toggle: true`), left of the
+   menu button: the lab site's round toggle at chrome scale. It shows the
+   theme it offers, the moon on a light page and the sun on a dark one. */
+.reveal .ssus-theme-toggle {
+  position: fixed;
+  right: 140px;
+  bottom: 14px;
+  z-index: 30;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--ssus-rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ssus-secondary);
+  cursor: pointer;
+}
+.reveal .ssus-theme-toggle:hover {
+  border-color: var(--ssus-accent);
+  color: var(--ssus-accent);
+}
+.reveal .ssus-theme-toggle:focus-visible {
+  outline: 2px solid var(--ssus-accent);
+  outline-offset: 2px;
+}
+.reveal .ssus-theme-toggle svg {
+  width: 15px;
+  height: 15px;
+}
+.reveal .ssus-theme-toggle .when-dark,
+html.ssus-dark .reveal .ssus-theme-toggle .when-light {
+  display: none;
+}
+html.ssus-dark .reveal .ssus-theme-toggle .when-dark {
+  display: block;
+}
+html.print-pdf .reveal .ssus-theme-toggle {
+  display: none;
+}
 
 /* On blueprint grounds the chrome takes sky, and the light mark, which
    would vanish there, steps out. Reveal flags those slides with
@@ -858,6 +912,10 @@ html.reveal-print .reveal .slides section#title-slide {
 }
 body:has(.reveal.has-dark-background) .slide-menu-button a {
   color: $ssus-sky !important;
+}
+.reveal.has-dark-background .ssus-theme-toggle {
+  color: $ssus-sky;
+  border-color: $ssus-hairline-blueprint;
 }
 .reveal.has-dark-background .slide-logo,
 .reveal.has-dark-background .footer {

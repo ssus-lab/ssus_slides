@@ -21,6 +21,15 @@
 --    in a room and must not flip with a laptop setting.
 -- 4. The hero lockup. ssus-lockup-src carries assets/ssus-horizontal-dark.svg
 --    into the title-slide partial as a data URI, unless ssus-lockup: false.
+-- 5. The viewer's switch. `ssus-theme-toggle: true` adds a light/dark button
+--    beside the menu button and the key T. The deck opens as rendered
+--    (`ssus-dark`), never by the system setting, so a presenter's laptop
+--    cannot flip it; a viewer's choice is kept in localStorage under
+--    `ssus-theme`, the key name the lab site uses (storage is per site, so
+--    the two never share a choice), and applied in the head before first
+--    paint. Other windows of the same deck (the speaker view) follow it.
+--    Only the page switches: a transparent figure drawn with one figure
+--    style keeps its inks, so a toggled deck sets figures on .ssus-plate.
 
 local BLUEPRINT = "#0F3B5E"
 -- Surface 05's grid (ssus-identity-mocks.html): plan white at 6%, 30 px
@@ -76,20 +85,86 @@ local function title_slide(meta)
   meta["title-slide-attributes"] = attrs
 end
 
-local function dark(meta)
+local function dark()
   quarto.doc.include_text("in-header",
     '<script>document.documentElement.classList.add("ssus-dark")</script>')
-  local night = svg_data_uri("ssus-mark-night.svg")
-  if not night then return end
-  quarto.doc.include_text("after-body", [[
+end
+
+-- The saved choice, applied in the head after any `ssus-dark` class, so the
+-- first paint is already the viewer's theme.
+local function saved_theme()
+  quarto.doc.include_text("in-header", [[
 <script>(function () {
-  document.querySelectorAll("img.slide-logo").forEach(function (img) {
-    if (/ssus-mark-light\.svg$/.test(img.getAttribute("src") || "")) {
-      img.src = "]] .. night .. [[";
+  try {
+    var t = localStorage.getItem("ssus-theme");
+    if (t === "dark" || t === "light") {
+      document.documentElement.classList.toggle("ssus-dark", t === "dark");
     }
-  });
+  } catch (e) {}
 })();
 </script>]])
+end
+
+-- The website's icons (ssus-website layouts/_default/baseof.html): the moon
+-- offers dark from a light page, the sun light from a dark one.
+local MOON = '<svg class="when-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>'
+local SUN = '<svg class="when-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>'
+
+-- The corner mark follows html.ssus-dark: the night twin on a dark page, the
+-- format's light mark otherwise. With the toggle, the same script builds the
+-- button, binds T, and listens for the choice made in another window.
+local function theme_script(toggle)
+  local night = svg_data_uri("ssus-mark-night.svg") or ""
+  local js = [[
+<script>(function () {
+  var root = document.documentElement;
+  var NIGHT = "]] .. night .. [[";
+  var marks = [].filter.call(document.querySelectorAll("img.slide-logo"), function (img) {
+    return /ssus-mark-light\.svg$/.test(img.getAttribute("src") || "");
+  });
+  marks.forEach(function (img) { img.dataset.ssusLight = img.getAttribute("src"); });
+  function isDark() { return root.classList.contains("ssus-dark"); }
+  function mark() {
+    if (!NIGHT) return;
+    marks.forEach(function (img) { img.src = isDark() ? NIGHT : img.dataset.ssusLight; });
+  }
+  mark();
+]]
+  if toggle then
+    js = js .. [[
+  var btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "ssus-theme-toggle";
+  btn.innerHTML = ']] .. MOON .. SUN .. [[';
+  function label() {
+    var text = isDark() ? "Switch to light theme (T)" : "Switch to dark theme (T)";
+    btn.setAttribute("aria-label", text);
+    btn.title = text;
+  }
+  function set(theme, save) {
+    root.classList.toggle("ssus-dark", theme === "dark");
+    mark();
+    label();
+    if (save) { try { localStorage.setItem("ssus-theme", theme); } catch (e) {} }
+  }
+  function flip() { set(isDark() ? "light" : "dark", true); }
+  btn.addEventListener("click", function () { flip(); btn.blur(); });
+  label();
+  (document.querySelector(".reveal") || document.body).appendChild(btn);
+  window.addEventListener("storage", function (e) {
+    if (e.key === "ssus-theme" && (e.newValue === "dark" || e.newValue === "light")) {
+      set(e.newValue, false);
+    }
+  });
+  function bind() {
+    Reveal.addKeyBinding({ keyCode: 84, key: "T", description: "Switch light and dark" }, flip);
+  }
+  if (window.Reveal) {
+    if (Reveal.isReady && Reveal.isReady()) { bind(); } else { Reveal.on("ready", bind); }
+  }
+]]
+  end
+  quarto.doc.include_text("after-body", js .. "})();\n</script>")
 end
 
 local function Meta(meta)
@@ -101,7 +176,11 @@ local function Meta(meta)
   end
   running_head = meta_true(meta["ssus-running-head"], true)
   title_slide(meta)
-  if meta_true(meta["ssus-dark"], false) then dark(meta) end
+  local is_dark = meta_true(meta["ssus-dark"], false)
+  local toggle = meta_true(meta["ssus-theme-toggle"], false)
+  if is_dark then dark() end
+  if toggle then saved_theme() end
+  if is_dark or toggle then theme_script(toggle) end
   return meta
 end
 
