@@ -1,0 +1,11 @@
+/* The deck's vendored OFL faces, read in place: Quarto links this file from
+   the installed extension, so each url resolves beside it, in fonts/, and
+   nothing is copied next to the deck. No Google @import: it fails offline. */
+@font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 400; font-display: swap; src: url("LibreFranklin-Regular.ttf") format("truetype"); }
+@font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 400; font-display: swap; src: url("LibreFranklin-Italic.ttf") format("truetype"); }
+@font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 600; font-display: swap; src: url("LibreFranklin-SemiBold.ttf") format("truetype"); }
+@font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 600; font-display: swap; src: url("LibreFranklin-SemiBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 800; font-display: swap; src: url("LibreFranklin-ExtraBold.ttf") format("truetype"); }
+@font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 800; font-display: swap; src: url("LibreFranklin-ExtraBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("IBMPlexMono-Regular.ttf") format("truetype"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 600; font-display: swap; src: url("IBMPlexMono-SemiBold.ttf") format("truetype"); }

@@ -1,6 +1,6 @@
 title: SSUS slides
 author: Eli Knaap
-version: 0.2.7
+version: 0.2.8
 quarto-required: ">=1.4.11"
 
 # The SSUS revealjs format: one SCSS theme layered on `default`, after
@@ -55,30 +55,31 @@ contributes:
               if (window.Reveal && window.Reveal.sync) { window.Reveal.sync(); }
             });
             </script>
-            <style>
-            /* Vendored OFL fonts, copied next to the rendered input by
-               format-resources (which flattens the extension's fonts/ dir to
-               basenames), so the urls are page-relative plain filenames.
-               No Google @import: it fails offline. */
-            @font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 400; font-display: swap; src: url("LibreFranklin-Regular.ttf") format("truetype"); }
-            @font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 400; font-display: swap; src: url("LibreFranklin-Italic.ttf") format("truetype"); }
-            @font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 600; font-display: swap; src: url("LibreFranklin-SemiBold.ttf") format("truetype"); }
-            @font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 600; font-display: swap; src: url("LibreFranklin-SemiBoldItalic.ttf") format("truetype"); }
-            @font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 800; font-display: swap; src: url("LibreFranklin-ExtraBold.ttf") format("truetype"); }
-            @font-face { font-family: "Libre Franklin"; font-style: italic; font-weight: 800; font-display: swap; src: url("LibreFranklin-ExtraBoldItalic.ttf") format("truetype"); }
-            @font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("IBMPlexMono-Regular.ttf") format("truetype"); }
-            @font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 600; font-display: swap; src: url("IBMPlexMono-SemiBold.ttf") format("truetype"); }
-            </style>
+      # The vendored OFL faces, read in place: Quarto links this stylesheet
+      # from the installed extension, so its urls resolve in fonts/ and
+      # nothing is copied next to the deck.
+      css: [fonts/ssus-fonts.css]
+      # MathJax's configuration, inline: it must be set before MathJax
+      # loads, and a file would have to be copied next to the deck.
       include-before-body:
         - text: |
-            <script src="mathjax-config.js"></script>
-      format-resources:
-        - mathjax-config.js
-        - fonts/LibreFranklin-Regular.ttf
-        - fonts/LibreFranklin-Italic.ttf
-        - fonts/LibreFranklin-SemiBold.ttf
-        - fonts/LibreFranklin-SemiBoldItalic.ttf
-        - fonts/LibreFranklin-ExtraBold.ttf
-        - fonts/LibreFranklin-ExtraBoldItalic.ttf
-        - fonts/IBMPlexMono-Regular.ttf
-        - fonts/IBMPlexMono-SemiBold.ttf
+            <script>
+            window.MathJax = {
+              tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true,
+                processRefs: true,
+                processEnvironments: true
+              },
+              chtml: {
+                font: 'mathjax-asana'
+              },
+              startup: {
+                ready: () => {
+                  console.log('MathJax is loaded and ready with font: mathjax-asana (Asana Math)');
+                  MathJax.startup.defaultReady();
+                }
+              }
+            };
+            </script>

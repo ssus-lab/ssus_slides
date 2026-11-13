@@ -13,7 +13,7 @@ Write a deck like any revealjs document and set `format: ssus-slides-revealjs`.
 In a project, start a deck in an empty folder:
 
 ```sh
-quarto use template ssus-lab/ssus_slides@v0.2.7 --no-prompt
+quarto use template ssus-lab/ssus_slides@v0.2.8 --no-prompt
 ```
 
 It installs the format and copies [`template.qmd`](template.qmd), renamed
@@ -116,9 +116,9 @@ for f in ext.glob("fonts/LibreFranklin-*.ttf"):
 plt.style.use(ext / "ssus-slides.mplstyle")
 ```
 
-The chunk reads from the extension folder, not from a copy next to the deck,
-because Quarto copies `format-resources` after it executes code: a first
-render would not find the copy. A figure made elsewhere with a white face,
+The chunk reads the fonts and the style from the extension folder, where the
+format keeps them; nothing is copied next to the deck. A figure made
+elsewhere with a white face,
 such as a paper's, goes on a plate: `![](fig.png){.ssus-plate}`.
 
 A deck with `ssus-theme-toggle` switches the page, not its figures: a
@@ -131,7 +131,7 @@ which read the same on both grounds.
 Install the format as a dependency, from a release tag:
 
 ```sh
-quarto add ssus-lab/ssus_slides@v0.2.7
+quarto add ssus-lab/ssus_slides@v0.2.8
 ```
 
 It lands at `_extensions/ssus-lab/ssus-slides/`. Never copy the folder in by
@@ -166,15 +166,18 @@ template gitignores `_extensions/`, which suits an install it repeats.
 - The deck box is the 1280×720 canvas exactly (margin 0) and slides pad
   themselves, so the theme's px are canvas units.
 - Libre Franklin (400, 600, 800, roman and italic) and IBM Plex Mono (400,
-  600) are vendored with their OFL licenses; `format-resources` copies them
-  next to the rendered deck, and the `@font-face` rules point there. There
-  is no Google Fonts `@import`, which fails offline.
+  600) are vendored with their OFL licenses in `fonts/`, beside
+  `fonts/ssus-fonts.css`, whose `@font-face` rules point at them. Quarto
+  links the stylesheet from the installed extension, so the fonts are read
+  in place and nothing is copied next to the deck; a render into an
+  `output-dir` (a website's `_site/`) carries the stylesheet and the fonts
+  into the output's `_extensions/`. There is no Google Fonts `@import`,
+  which fails offline. The MathJax configuration is inline in
+  `_extension.yml`, for the same reason.
 
 ## Known limitations
 
 - MathJax comes from the jsdelivr CDN, so math does not render offline.
-- The page-relative font contract is proven for a plain render next to the
-  input; verify it inside a website project before publishing a deck there.
 - Quarto's default `logo` path points into `_extensions/`, so in light decks
   the corner mark needs the extension folder beside the deck, or
   `embed-resources: true`.
